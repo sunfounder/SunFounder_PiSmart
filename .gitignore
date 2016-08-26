@@ -1,0 +1,12 @@
+log/*
+*.pyc
+sftp-config.json
+*.bak
+*.log
+*.db
+SunFounder_PiRobot.egg-info/*
+build/*
+dist/*
+*.dic
+*.fsg
+*.jsgf
