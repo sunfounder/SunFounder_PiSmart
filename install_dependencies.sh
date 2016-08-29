@@ -191,11 +191,11 @@ sudo apt-get upgrade -y
 	chmod +x ./pirobot/MakeSpeechProject.py
     chmod +x ./pirobot/SpeakPythonMakeDB.py
     chmod +x ./pirobot/SpeakPythonMakeJSGF.py
-    chmod +x ./pirobotcmd
+    chmod +x ./bin/pirobotcmd
     sudo cp ./pirobot/MakeSpeechProject.py /usr/local/bin
     sudo cp ./pirobot/SpeakPythonMakeDB.py /usr/local/bin
     sudo cp ./pirobot/SpeakPythonMakeJSGF.py /usr/local/bin
-    sudo cp ./pirobotcmd /usr/local/bin
+    sudo cp ./bin/pirobotcmd /usr/local/bin
     sudo cp ./pirobot/model-5 /usr/local/bin
     sudo cp ./pirobot/pocketsphinx.dic /usr/local/bin
 	sudo cp /usr/local/lib/libsphinxbase.so.3 /usr/lib

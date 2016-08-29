@@ -4,7 +4,7 @@ from pirobot import PiRobot
 import sys
 import readline
 
-cmds = ["speaker_volume", "capture_volume", "motor_switch", "servo_switch", "motor_switch", "power_type"]
+cmds = ["speaker_volume", "capture_volume", "motor_switch", "servo_switch", "motor_switch", "power_type", "get"]
 
 p = PiRobot()
 
@@ -17,6 +17,7 @@ def usage(opt = None):
 		print "    servo_switch      Switch for servo"
 		print "    speaker_switch    Switch for speaker"
 		print "    power_type        Change power type for alarm"
+		print "    get               Get informations you want"
 	elif opt == "speaker_volume":
 		print "Option: Speaker volume:\n\n    Specified a volume in [0, 100]"
 	elif opt == "capture_volume":
@@ -29,6 +30,9 @@ def usage(opt = None):
 		print "Option: Speaker Switch:\n\n    Specified a state for speaker: 0 = OFF; 1 = ON"
 	elif opt == "power_type":
 		print 'Option: Power Type:\n\n    Specified a power type: "2S", "3S" Li-po battery or "DC" power'
+	elif opt == "get":
+		print 'Option: Get:\n\n    Specified an information.\n\n Avalible informations: \n\n'
+		print '    voltage    Get power voltage'
 	quit()
 
 def completer(text, state):
@@ -96,3 +100,8 @@ elif option == 'power_type':
 	if control not in ['2S', '3S', 'DC']:
 		usage(option)
 	p.power_type = control
+elif option == 'get':
+	if control == 'voltage':
+		print "Power voltage now is:", p.read_battery
+	else:
+		usage(option)
