@@ -3,13 +3,11 @@
 
 ##Tested on:
 
-#- Ubuntu 12.04 LTS (Precise Pangolin)
 #- Raspbian (RaspberryPi - think of those possibilities)
 
 #```
-# Make sure you have setuptools for python: https://pypi.python.org/pypi/setuptools
 
-# All of these commands are run from the base folder (dependencies), wherever you clone it to
+# All of these commands are run from the base folder (SunFounder_PiRobot), wherever you clone it to
 
 if [ "$(whoami)" != "root" ] ; then
 	echo "You must run setup.sh as root."
@@ -20,31 +18,6 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 ###################################
-# install django pocketsphinx i2c-tools python-smbus runtime #
-###################################
-	echo "Installing django"
-	if sudo apt-get install python-pip ; then
-		echo "Successfully installed python-pip"
-	else
-		echo "Failed to installed python-pip"
-		exit
-	fi
-    if sudo pip install django ; then
-    	echo "Successfully installed django runtime"
-    else
-    	echo "Failed to installed django"
-    	exit
-    fi
-
-    echo "Installinging \n pocketsphinx \n i2c-tools \n python-smbus"
-    if sudo apt-get install pocketsphinx i2c-tools python-smbus -y; then
-    	echo "Successfully installed pocketsphinx i2c-tools python-smbus"
-    else
-    	echo "Failed to installed pocketsphinx i2c-tools python-smbus"
-    	exit
-    fi
-
-###################################
 # install espeak festival pico runtime #
 ###################################
     echo "Installinging \n espeak \n festival \n libttspico-utils \n tts-engine"
@@ -52,6 +25,17 @@ sudo apt-get upgrade -y
     	echo "Successfully installed espeak festival pico"
     else
     	echo "Failed to installed espeak festival pico"
+    	exit
+    fi
+
+###################################
+# install pocketsphinx i2c-tools python-smbus runtime #
+###################################
+    echo "Installinging \n pocketsphinx \n i2c-tools \n python-smbus"
+    if sudo apt-get install pocketsphinx i2c-tools python-smbus -y; then
+    	echo "Successfully installed pocketsphinx i2c-tools python-smbus"
+    else
+    	echo "Failed to installed pocketsphinx i2c-tools python-smbus"
     	exit
     fi
 
