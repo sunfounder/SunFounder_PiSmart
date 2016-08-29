@@ -20,7 +20,7 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 ###################################
-# install django espeak pocketsphinx i2c-tools python-smbus runtime #
+# install django pocketsphinx i2c-tools python-smbus runtime #
 ###################################
 	echo "Installing django"
 	if sudo apt-get install python-pip ; then
@@ -36,11 +36,22 @@ sudo apt-get upgrade -y
     	exit
     fi
 
-    echo "Installinging \n espeak \n pocketsphinx \n i2c-tools \n python-smbus"
-    if sudo apt-get install espeak pocketsphinx i2c-tools python-smbus -y; then
-    	echo "Successfully installed espeak pocketsphinx i2c-tools python-smbus"
+    echo "Installinging \n pocketsphinx \n i2c-tools \n python-smbus"
+    if sudo apt-get install pocketsphinx i2c-tools python-smbus -y; then
+    	echo "Successfully installed pocketsphinx i2c-tools python-smbus"
     else
-    	echo "Failed to installed espeak pocketsphinx i2c-tools python-smbus"
+    	echo "Failed to installed pocketsphinx i2c-tools python-smbus"
+    	exit
+    fi
+
+###################################
+# install espeak festival pico runtime #
+###################################
+    echo "Installinging \n espeak \n festival \n libttspico-utils \n tts-engine"
+    if sudo apt-get install espeak festival libttspico-utils -y; then
+    	echo "Successfully installed espeak festival pico"
+    else
+    	echo "Failed to installed espeak festival pico"
     	exit
     fi
 
