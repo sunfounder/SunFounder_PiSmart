@@ -9,7 +9,13 @@ p = PiRobot()
 
 def usage(opt = None):
 	if opt == None:
-		print "usage: pirobot [option] [control]"
+		print "Usage: pirobotcmd [option] [control]\n"
+		print "    speaker_volume    Control the volume for speaker"
+		print "    capture_volume    Control the volume for microphone"
+		print "    motor_switch      Switch for motor"
+		print "    servo_switch      Switch for servo"
+		print "    speaker_switch    Switch for speaker"
+		print "    power_type        Change power type for alarm"
 	elif opt == "speaker_volume":
 		print "Option: Speaker volume:\n\n    Specified a volume in [0, 100]"
 	elif opt == "capture_volume":
@@ -18,7 +24,7 @@ def usage(opt = None):
 		print "Option: Motor Switch:\n\n    Specified a state for motor: 0 = OFF; 1 = ON"
 	elif opt == "servo_switch":
 		print "Option: Servo Switch:\n\n    Specified a state for servo: 0 = OFF; 1 = ON"
-	elif opt == "motor_switch":
+	elif opt == "speaker_switch":
 		print "Option: Speaker Switch:\n\n    Specified a state for speaker: 0 = OFF; 1 = ON"
 	elif opt == "power_type":
 		print 'Option: Power Type:\n\n    Specified a power type: "2S", "3S" Li-po battery or "DC" power'
@@ -46,27 +52,42 @@ else:
 	control = sys.argv[2]
 
 if option == 'speaker_volume':
-	control = int(control)
+	try:
+		control = int(control)
+	except:
+		usage(option)
 	if control not in range(0, 101):
 		usage(option)
 	p.volume = control
 elif option == 'capture_volume':
-	control = int(control)
+	try:
+		control = int(control)
+	except:
+		usage(option)
 	if control not in range(0, 101):
 		usage(option)
 	p.capture_volume = control
 elif option == 'motor_switch':
-	control = int(control)
+	try:
+		control = int(control)
+	except:
+		usage(option)
 	if control not in [0, 1]:
 		usage(option)
 	p.motor_switch(control)
 elif option == 'speaker_switch':
-	control = int(control)
+	try:
+		control = int(control)
+	except:
+		usage(option)
 	if control not in [0, 1]:
 		usage(option)
 	p.speaker_switch(control)
 elif option == 'servo_switch':
-	control = int(control)
+	try:
+		control = int(control)
+	except:
+		usage(option)
 	if control not in [0, 1]:
 		usage(option)
 	p.servo_switch(control)

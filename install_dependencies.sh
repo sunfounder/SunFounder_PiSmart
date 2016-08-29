@@ -180,21 +180,26 @@ sudo apt-get upgrade -y
 		echo "Failed to install Sequitur-g2p (g2p.py)"
 	fi
 	cd ..  # dependencies
+		echo 'Cleaning up...'
 		sudo rm -rf antlr-3.4 wsj1  Sequitur-g2p sphinxbase-5prealpha pocketsphinx-5prealpha 
-		echo 'remove antlr-3.4 wsj1 Sequitur-g2p sphinxbase-5prealpha pocketsphinx-5prealpha'
+		echo 'done'
+
 	
 #speakpython dictionary 
+	echo 'Copying files...'
 	cd /home/pi/SunFounder_PiRobot
 	chmod +x ./pirobot/MakeSpeechProject.py
     chmod +x ./pirobot/SpeakPythonMakeDB.py
     chmod +x ./pirobot/SpeakPythonMakeJSGF.py
+    chmod +x ./pirobotcmd
     sudo cp ./pirobot/MakeSpeechProject.py /usr/local/bin
     sudo cp ./pirobot/SpeakPythonMakeDB.py /usr/local/bin
     sudo cp ./pirobot/SpeakPythonMakeJSGF.py /usr/local/bin
+    sudo cp ./pirobotcmd /usr/local/bin
     sudo cp ./pirobot/model-5 /usr/local/bin
     sudo cp ./pirobot/pocketsphinx.dic /usr/local/bin
 	sudo cp /usr/local/lib/libsphinxbase.so.3 /usr/lib
-	echo 'cp files success'
+	echo 'done'
 
 	echo 'all done, enjoy it'
 # Usage
