@@ -3,7 +3,7 @@ from pirobot import PiRobot
 import sys
 import readline
 
-options = ["speaker_volume", "capture_volume", "motor_switch", "servo_switch", "motor_switch", "power_type"]
+cmds = ["speaker_volume", "capture_volume", "motor_switch", "servo_switch", "motor_switch", "power_type"]
 
 p = PiRobot()
 
@@ -25,13 +25,13 @@ def usage(opt = None):
 	quit()
 
 def completer(text, state):
-	options = [i for i in options if i.startswith(text)]
+	options = [i for i in cmds if i.startswith(text)]
 	if state < len(options):
 		return options[state]
 	else:
 		return None
 
-readline.parse_and_bind("tab: complete")
+readline.parse_and_bind("tab: completer")
 readline.set_completer(completer)
 argv_len = len(sys.argv)
 
