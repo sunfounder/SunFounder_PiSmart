@@ -46,22 +46,27 @@ else:
 	control = sys.argv[2]
 
 if option == 'speaker_volume':
+	control = int(control)
 	if control not in range(0, 101):
 		usage(option)
 	p.volume = control
 elif option == 'capture_volume':
+	control = int(control)
 	if control not in range(0, 101):
 		usage(option)
 	p.capture_volume = control
 elif option == 'motor_switch':
+	control = int(control)
 	if control not in [0, 1]:
 		usage(option)
 	p.motor_switch(control)
 elif option == 'speaker_switch':
+	control = int(control)
 	if control not in [0, 1]:
 		usage(option)
 	p.speaker_switch(control)
 elif option == 'servo_switch':
+	control = int(control)
 	if control not in [0, 1]:
 		usage(option)
 	p.servo_switch(control)
