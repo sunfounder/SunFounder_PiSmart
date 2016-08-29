@@ -273,11 +273,24 @@ class PiRobot(_Basic_class):
 	def volume(self, vol):
 		if vol not in range(0, 101):
 			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(vol))
-		self._volume = _map(vol, 0, 100, -10239, 400 )
+		self._volume = _map(vol, 0, 100, -10239, 400)
 		cmd = "sudo amixer cset numid=1 -- %d" % self._volume
 		self.run_command(cmd)
 		return 0
 	
+	@property
+	def capture_volume(self):
+		return self._capture_volume
+
+	@capture_volume.setter
+	def capture_volume(self, value):
+		if vol not in range(0, 101):
+			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(vol))
+		self._capture_volume = _map(vol, 0, 100, 0, 16)
+		cmd = "sudo amixer -c 1 cset numid=8 -- %d" % self._capture_volume
+		self.run_command(cmd)
+		return 0
+
 class PWM(_Basic_class):
 	def __init__(self, channel):
 		if channel not in range(0, 16):
