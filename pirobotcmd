@@ -4,7 +4,7 @@ import sys
 
 p = PiRobot()
 
-def usage(opt == None):
+def usage(opt = None):
 	if opt == None:
 		print "usage: pirobot [option] [control]"
 	elif opt == "speaker_volume":
