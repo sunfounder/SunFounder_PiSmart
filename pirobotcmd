@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+from pirobot import PiRobot
+import sys
+
+p = PiRobot()
+
+def usage(opt == None):
+	if opt == None:
+		print "usage: pirobot [option] [control]"
+	elif opt == "speaker_volume":
+		print "Option: Speaker volume:\n\n    Specified a volume in [0, 100]"
+	elif opt == "capture_volume":
+		print "Option: Capture volume:\n\n    Specified a volume in [0, 100]"
+	elif opt == "motor_switch":
+		print "Option: Motor Switch:\n\n    Specified a state for motor: 0 = OFF; 1 = ON"
+	elif opt == "servo_switch":
+		print "Option: Servo Switch:\n\n    Specified a state for servo: 0 = OFF; 1 = ON"
+	elif opt == "motor_switch":
+		print "Option: Speaker Switch:\n\n    Specified a state for speaker: 0 = OFF; 1 = ON"
+	elif opt == "power_type":
+		print 'Option: Power Type:\n\n    Specified a power type: "2S", "3S" Li-po battery or "DC" power'
+	quit()
+
+argv_len = len(sys.argv)
+
+if argv_len < 2:
+	usage()
+else:
+	option = sys.argv[1]
+
+if argv_len < 3:
+	usage(option)
+else:
+	control = sys.argv[2]
+
+if option == 'speaker_volume':
+	if control not in range(0, 101):
+		usage(option)
+	p.volume = control
+elif option == 'capture_volume':
+	if control not in range(0, 101):
+		usage(option)
+	p.capture_volume = control
+elif option == 'motor_switch':
+	if control not in [0, 1]:
+		usage(option)
+	p.motor_switch(control)
+elif option == 'speaker_switch':
+	if control not in [0, 1]:
+		usage(option)
+	p.speaker_switch(control)
+elif option == 'servo_switch':
+	if control not in [0, 1]:
+		usage(option)
+	p.servo_switch(control)
+elif option == 'power_type':
+	if control not in ['2S', '3S', 'DC']:
+		usage(option)
+	p.power_type = control
