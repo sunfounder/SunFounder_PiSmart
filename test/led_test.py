@@ -21,13 +21,14 @@ red_leds.DEBUG = True
 
 def setup():
 	print "|=====================================================|"
-	print "|                     LED test                        |"
+	print "|                   LED Ring test                     |"
 	print "|-----------------------------------------------------|"
 	print "|                                                     |"
-	print "|         Blue leds breath and then red leds          |"
+	print "|         Breath Blue leds breath and then red leds   |"
 	print "|                                                     |"
 	print "|                                           SunFounder|"
 	print "|=====================================================|"
+	time.sleep(2)
 
 def main():
 	while True:

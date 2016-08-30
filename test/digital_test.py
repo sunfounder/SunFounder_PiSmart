@@ -15,7 +15,7 @@ import time
 
 def setup():
 	print "|==================================================|"
-	print "|              Analog port 1 test                  |"
+	print "|                Digital port test                 |"
 	print "|--------------------------------------------------|"
 	print "|             Led connect to digital 1             |"
 	print "|                                                  |"
@@ -25,13 +25,14 @@ def setup():
 	print "|==================================================|"
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(1, GPIO.OUT)
+	time.sleep(2)
 
 def main():
 	while True:
-		print "led on"
+		print ".....Led on"
 		GPIO.output(1, 0)
 		time.sleep(0.3)
-		print "led off"
+		print "Led off...."
 		GPIO.output(1, 1)
 		time.sleep(0.3)
 

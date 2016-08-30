@@ -18,14 +18,15 @@ p.DEBUG = True
 
 def setup():
 	print "===================================================="
-	print "|                 Analog port 1 test               |"
+	print "|                 Analog port 0 test               |"
 	print "|--------------------------------------------------|"
-	print "|      Potentionmeter  connect to analog 1         |"
+	print "|      Potentionmeter  connect to analog 0         |"
 	print "|                                                  |"
-	print "|                        Read analog value                   |"
+	print "|                  Read analog value               |"
 	print "|                                                  |"
 	print "|                                        SunFounder|"
 	print "===================================================="
+	time.sleep(2)
 
 def main():
 	while True:

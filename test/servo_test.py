@@ -32,6 +32,7 @@ def setup():
 	print "|                                                  |"
 	print "|                                        SunFounder|"
 	print "===================================================="
+	time.sleep(2)
 
 def main():
 	while True:
