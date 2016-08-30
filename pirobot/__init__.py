@@ -284,12 +284,28 @@ class PiRobot(_Basic_class):
 
 	@capture_volume.setter
 	def capture_volume(self, value):
+		capture_volume_id = get_capture_volume_id()
 		if value not in range(0, 101):
 			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(value))
 		self._capture_volume = _map(value, 0, 100, 0, 16)
-		cmd = "sudo amixer -c 1 cset numid=8 -- %d" % self._capture_volume
+		cmd = "sudo amixer -c 1 cset numid=%s -- %d" % (capture_volume_id, self._capture_volume)
 		self.run_command(cmd)
 		return 0
+
+	def get_capture_volume_id(self):
+		all_controls = run_command("sudo amixer -c 1 controls")
+		all_controls = all_controls.split('\n')
+		capture_volume = ''
+		capture_volume_id = ''
+		for line in all_controls:
+			if 'Mic Capture Volume' in line:
+				capture_volume = line
+		capture_volume=capture_volume.split(',')
+		for variable in capture_volume:
+			if 'numid' in variable:
+				capture_volume_id = variable
+		capture_volume_id = capture_volume_id.split('=')[1]
+		return int(capture_volume_id)
 
 class PWM(_Basic_class):
 	def __init__(self, channel):
