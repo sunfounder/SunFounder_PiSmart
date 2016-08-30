@@ -293,7 +293,7 @@ class PiRobot(_Basic_class):
 		return 0
 
 	def get_capture_volume_id(self):
-		all_controls = run_command("sudo amixer -c 1 controls")
+		all_controls = self.run_command("sudo amixer -c 1 controls")
 		all_controls = all_controls.split('\n')
 		capture_volume = ''
 		capture_volume_id = ''
