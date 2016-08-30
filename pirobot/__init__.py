@@ -284,7 +284,7 @@ class PiRobot(_Basic_class):
 
 	@capture_volume.setter
 	def capture_volume(self, value):
-		capture_volume_id = get_capture_volume_id()
+		capture_volume_id = self.get_capture_volume_id()
 		if value not in range(0, 101):
 			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(value))
 		self._capture_volume = _map(value, 0, 100, 0, 16)
