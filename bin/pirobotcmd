@@ -4,7 +4,7 @@ from pirobot import PiRobot
 import sys
 import readline
 
-cmds = ["speaker_volume", "capture_volume", "motor_switch", "servo_switch", "motor_switch", "power_type", "get"]
+cmds = ["speaker_volume", "capture_volume", "motor_switch", "servo_switch", "speaker_switch", "power_type", "get"]
 
 p = PiRobot()
 
@@ -35,15 +35,6 @@ def usage(opt = None):
 		print '    voltage    Get power voltage'
 	quit()
 
-def completer(text, state):
-	options = [i for i in cmds if i.startswith(text)]
-	if state < len(options):
-		return options[state]
-	else:
-		return None
-
-readline.parse_and_bind("tab: completer")
-readline.set_completer(completer)
 argv_len = len(sys.argv)
 
 if argv_len < 2:
@@ -105,3 +96,6 @@ elif option == 'get':
 		print "Power voltage now is:", p.read_battery
 	else:
 		usage(option)
+else:
+	print 'Option Error'
+	usage()

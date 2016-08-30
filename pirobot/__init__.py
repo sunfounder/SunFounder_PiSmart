@@ -270,10 +270,10 @@ class PiRobot(_Basic_class):
 		return self._volume
 	
 	@volume.setter
-	def volume(self, vol):
-		if vol not in range(0, 101):
-			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(vol))
-		self._volume = _map(vol, 0, 100, -10239, 400)
+	def volume(self, value):
+		if value not in range(0, 101):
+			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(value))
+		self._volume = _map(value, 0, 100, -10239, 400)
 		cmd = "sudo amixer cset numid=1 -- %d" % self._volume
 		self.run_command(cmd)
 		return 0
@@ -284,9 +284,9 @@ class PiRobot(_Basic_class):
 
 	@capture_volume.setter
 	def capture_volume(self, value):
-		if vol not in range(0, 101):
-			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(vol))
-		self._capture_volume = _map(vol, 0, 100, 0, 16)
+		if value not in range(0, 101):
+			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(value))
+		self._capture_volume = _map(value, 0, 100, 0, 16)
 		cmd = "sudo amixer -c 1 cset numid=8 -- %d" % self._capture_volume
 		self.run_command(cmd)
 		return 0
