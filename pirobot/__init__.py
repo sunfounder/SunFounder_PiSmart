@@ -122,8 +122,7 @@ class _Basic_class(object):
 			subprocess.call(cmd, shell=True, stdout=f, stderr=f)
 			f.seek(0)
 			output = f.read()
-			if output:
-				self.debug('Command output: "\n%s"' % output)
+			return output
 
 class PiRobot(_Basic_class):
 
