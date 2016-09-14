@@ -93,7 +93,7 @@ elif option == 'power_type':
 	p.power_type = control
 elif option == 'get':
 	if control == 'voltage':
-		print "Power voltage now is:", p.read_battery
+		print "Power voltage now is:", p.read_battery()
 	else:
 		usage(option)
 else:
