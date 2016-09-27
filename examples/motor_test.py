@@ -7,6 +7,7 @@
 * E-mail      : service@sunfounder.com
 * Website     : www.sunfounder.com
 * Update      : Cavon    2016-08-09: Update debug_settings
+*               Cavon    2016-09-27: Add " " cmd to reverse
 **********************************************************************
 '''
 from pirobot import PiRobot, Motor
@@ -22,32 +23,33 @@ motorA.DEBUG = True
 motorB.DEBUG = True
 p.motor_switch(1)
 
-last_speed = 0
-
 def setup():
 	print "|==================================================|"
 	print "|                 Motor port test                  |"
 	print "|--------------------------------------------------|"
 	print "|     Motors connect to Motor A and Motor B port   |"
 	print "|                                                  |"
-	print "|           Input value and motors work            |"
+	print "|      Input value(0, 100) to set motors speed     |"
+	print "|        Input " "(space) to reverse motors        |"
 	print "|                                                  |"
 	print "|                                        SunFounder|"
 	print "|==================================================|"
 
 def main():
-	global last_speed
-
+	direction = True
+	speed = 0
 	while True:
-
-		speed = input("input: ")
-
-		if speed != last_speed:
-			
+		value = raw_input("input: ")
+		if value == " ":
+			direction = not direction
+		else:
+			speed = int(value)
+		if direction:
 			motorA.forward(speed)
 			motorB.forward(speed)
-
-			last_speed = speed
+		else:
+			motorA.backward(speed)
+			motorB.backward(speed)
 
 def destroy():
 	motorA.stop()
