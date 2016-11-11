@@ -9,46 +9,46 @@ int read_byte(int addr) {
   return Wire.read();
 }
 
-void write_byte(int addr, int d) {
+void writeByte(int addr, int d) {
   Wire.beginTransmission(PWM_ADDRESS);
   Wire.write(addr);
   Wire.write(d);
   Wire.endTransmission();
 }
 
-void pwm_begin() {
+void pwmBegin() {
   Wire.begin();
-  write_byte(PCA9685_MODE1, 0x0);
+  writeByte(PCA9685_MODE1, 0x0);
 }
 
-void pwm_set_frequency(float freq) {
+void pwmSetFrequency(float freq) {
   //Serial.print("Attempting to set freq ");
   //Serial.println(freq);
   freq *= 0.9;  // Correct for overshoot in the frequency setting (see issue #11).
-  float prescaleval = 25000000;
-  prescaleval /= 4096;
-  prescaleval /= freq;
-  prescaleval -= 1;
+  float preScaleValue = 25000000;
+  preScaleValue /= 4096;
+  preScaleValue /= freq;
+  preScaleValue -= 1;
   if (PWM_DEBUG) {
-  Serial.print("Estimated pre-scale: "); Serial.println(prescaleval);
+  Serial.print("Estimated pre-scale: "); Serial.println(preScaleValue);
   }
-  int prescale = floor(prescaleval + 0.5);
+  int preScale = floor(preScaleValue + 0.5);
   if (PWM_DEBUG) {
-  Serial.print("Final pre-scale: "); Serial.println(prescale);
+  Serial.print("Final pre-scale: "); Serial.println(preScale);
   }
 
-  int oldmode = read_byte(PCA9685_MODE1);
-  int newmode = (oldmode & 0x7F) | 0x10; // sleep
-  write_byte(PCA9685_MODE1, newmode); // go to sleep
-  write_byte(PCA9685_PRESCALE, prescale); // set the prescaler
-  write_byte(PCA9685_MODE1, oldmode);
+  int oldMode = read_byte(PCA9685_MODE1);
+  int newMode = (oldMode & 0x7F) | 0x10; // sleep
+  writeByte(PCA9685_MODE1, newMode); // go to sleep
+  writeByte(PCA9685_PRESCALE, preScale); // set the prescaler
+  writeByte(PCA9685_MODE1, oldMode);
   delay(5);
-  write_byte(PCA9685_MODE1, oldmode | 0xa1);  //  This sets the MODE1 register to turn on auto increment.
+  writeByte(PCA9685_MODE1, oldMode | 0xa1);  //  This sets the MODE1 register to turn on auto increment.
   // This is why the beginTransmission below was not working.
   //  Serial.print("Mode now 0x"); Serial.println(read_byte(PCA9685_MODE1), HEX);
 }
 
-void pwm_set_value(int num, int on, int off) {
+void pwmSetValue(int num, int on, int off) {
   //Serial.print("Setting PWM "); Serial.print(num); Serial.print(": "); Serial.print(on); Serial.print("->"); Serial.println(off);
 
   Wire.beginTransmission(PWM_ADDRESS);

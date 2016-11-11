@@ -10,12 +10,12 @@
 #define LED0_ON_L 			0x6
 
 
-int read_byte(int addr);
+int readByte(int addr);
 
-void write_byte(int addr, int d);
+void writeByte(int addr, int d);
 
-void pwm_begin();
+void pwmBegin();
 
-void pwm_set_frequency(float freq);
+void pwmSetFrequency(float freq);
 
-void pwm_set_value(int num, int on, int off);
+void pwmSetValue(int num, int on, int off);

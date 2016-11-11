@@ -1,47 +1,44 @@
 #include "write_switch.h"
 
-int analogList[2] = {0,0};
-int ANALOG_CHANNEL[6] = {0, 1, 2, 3, 6, 7};  // analog channel of arduino,A4,A5 is used as i2c;
+//int analogList[2] = {0,0};
+//int ANALOG_CHANNEL[6] = {0, 1, 2, 3, 6, 7};  // analog channel of arduino,A4,A5 is used as i2c;
 
 void IO_init(){
-  //======== Pins Setup ========
-  pinMode(MotorPowerSwitch, 	OUTPUT);
-  pinMode(ServoPowerSwitch, 	OUTPUT);
-  pinMode(RPiPowerSwitch, 		OUTPUT);
-  pinMode(SpeakerPowerSwitch, 	OUTPUT);
-  pinMode(StatusLed, 			OUTPUT);
-  pinMode(PowerOffDetect, 		OUTPUT);
-  pinMode(MicSwitch, 			OUTPUT);
+  //======== Pins Setup =======rSwitch,  OUTPUT);
+  pinMode(servoPowerSwitch, OUTPUT);
+  pinMode(motorPowerSwitch, OUTPUT);
+  pinMode(rpiPowerSwitch, 		OUTPUT);
+  pinMode(speakerPowerSwitch, 	OUTPUT);
+  pinMode(statusLed, 			OUTPUT);
+  pinMode(powerOffDetect, 		INPUT);
+  pinMode(micSwitch, 			OUTPUT);
 
-  digitalWrite(ServoPowerSwitch, 	SERVOPOWEROFF);
-  digitalWrite(MotorPowerSwitch, 	MOTORPOWEROFF);
-  digitalWrite(SpeakerPowerSwitch, 	SPEAKERPOWEROFF);
-  digitalWrite(MicSwitch, 			MICSWITCHOFF);
-  digitalWrite(RPiPowerSwitch, 		RPIPOWEROFF);
-  digitalWrite(PowerOffDetect, 		RPIPOWERON);
-  digitalWrite(StatusLed, 			STATUSLEDON);
+  digitalWrite(servoPowerSwitch, 	SERVOPOWEROFF);
+  digitalWrite(motorPowerSwitch, 	MOTORPOWEROFF);
+  digitalWrite(speakerPowerSwitch, 	SPEAKERPOWEROFF);
+  digitalWrite(micSwitch, 			MICSWITCHOFF);
+  digitalWrite(rpiPowerSwitch, 		RPIPOWEROFF);
+  digitalWrite(powerOffDetect, 		RPIPOWERON);
+  digitalWrite(statusLed, 			STATUSLEDON);
 
 }
 
 /* contral switches */
-void servo_switch_ctrl(int onoff){
-	digitalWrite(ServoPowerSwitch, onoff);
+void servoSwitchCtrl(int onoff){
+	digitalWrite(servoPowerSwitch, onoff);
 }
-void motor_switch_ctrl(int onoff){
-	digitalWrite(MotorPowerSwitch, onoff);
+void motorSwitchCtrl(int onoff){
+	digitalWrite(motorPowerSwitch, onoff);
 }
-void speaker_switch_ctrl(int onoff){
-	digitalWrite(SpeakerPowerSwitch, onoff);
+void speakerSwitchCtrl(int onoff){
+	digitalWrite(speakerPowerSwitch, onoff);
 }
-void rpi_switch_ctrl(int onoff){
-	digitalWrite(RPiPowerSwitch, onoff);
+void rpiSwitchCtrl(int onoff){
+	digitalWrite(rpiPowerSwitch, onoff);
 }
-void mic_switch_ctrl(int onoff){
-	digitalWrite(MicSwitch, onoff);
+void micSwitchCtrl(int onoff){
+	digitalWrite(micSwitch, onoff);
 }
-void status_led_ctrl(int onoff){
-	digitalWrite(StatusLed, onoff);
-}
-void rpi_shutdown_ctrl(int onoff){
-	digitalWrite(PowerOffDetect, onoff);
+void statusLedCtrl(int onoff){
+	digitalWrite(statusLed, onoff);
 }

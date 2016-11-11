@@ -17,21 +17,20 @@
 #define STATUSLEDOFF 		0
 
 /* pins connection */
-#define MotorPowerSwitch     4
-#define SpeakerPowerSwitch   5
-#define RPiPowerSwitch       6
-#define ServoPowerSwitch     7
-#define MicSwitch            8
-#define PowerOffDetect       9
-#define StatusLed            10
+#define motorPowerSwitch     4
+#define speakerPowerSwitch   5
+#define rpiPowerSwitch       6
+#define servoPowerSwitch     7
+#define micSwitch            8
+#define powerOffDetect       9
+#define statusLed            10
 
 
 /* contral switches */
 extern void IO_init();
-extern void servo_switch_ctrl(int onoff);
-extern void motor_switch_ctrl(int onoff);
-extern void speaker_switch_ctrl(int onoff);
-extern void rpi_switch_ctrl(int onoff);
-extern void mic_switch_ctrl(int onoff);
-extern void status_led_ctrl(int onoff);
-extern void rpi_shutdown_ctrl(int onoff);
+extern void servoSwitchCtrl(int onoff);
+extern void motorSwitchCtrl(int onoff);
+extern void speakerSwitchCtrl(int onoff);
+extern void rpiSwitchCtrl(int onoff);
+extern void micSwitchCtrl(int onoff);
+extern void statusLedCtrl(int onoff);

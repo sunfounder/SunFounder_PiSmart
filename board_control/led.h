@@ -11,7 +11,12 @@
 #define  BREATH_DELAY 		20
 
 extern void breath(int start_value, int end_value, int led);
-extern void led_breath_power_on();
-extern void led_breath_power_off();
+extern void ledBreathPowerOn();
+extern void ledBreathPowerOff();
 
 
+extern void breathLedSetup();
+
+extern void powerOffLedBreathUp();
+
+extern void powerOffLedBreathDown();

@@ -2,29 +2,29 @@
 #include "pwm.h"
 
 
-void breath(int start_value, int end_value, int led){
-  start_value = map(start_value, 0, 100, 0, 157);
-  end_value = map(end_value, 0, 100, 0, 157);
+void breath(int startValue, int endValue, int led){
+  startValue = map(startValue, 0, 100, 0, 157);
+  endValue = map(endValue, 0, 100, 0, 157);
   int step;
 
-  if (start_value > end_value)
+  if (startValue > endValue)
     step = -1;
   else
     step = 1;
 
   if (LED_DEBUG) {
     Serial.print("step = "); Serial.println(step);
-    Serial.print(start_value); Serial.print("->"); Serial.println(end_value);
+    Serial.print(startValue); Serial.print("->"); Serial.println(endValue);
   }
 
   double brightness;
   float tmp;
-  for (int i = start_value; i != end_value; i=i+step)
+  for (int i = startValue; i != endValue; i=i+step)
   {
     tmp = float(i) / 100;
     brightness = 100 * sin(tmp);
     brightness = map(brightness, 0, 100, 0, 4095);
-    pwm_set_value(led, 0, brightness);
+    pwmSetValue(led, 0, brightness);
     delay(BREATH_DELAY);
   }
 
@@ -39,12 +39,12 @@ void breath(int start_value, int end_value, int led){
 	  change the brightness via pwm with time pass by
 */
 
-void led_breath_power_on() {
+void ledBreathPowerOn() {
 
   Wire.endTransmission(true);
-  pwm_begin();
-  pwm_set_frequency(60);
-  pwm_set_value(RED, 0, OFF);   //when pi poweron , we use BLUE led
+  pwmBegin();
+  pwmSetFrequency(60);
+  pwmSetValue(RED, 0, OFF);   //when pi poweron , we use BLUE led
 
   // OFF  -> BRIGHT ++
   breath(OFF, BRIGHT, BLUE);
@@ -68,13 +68,13 @@ void led_breath_power_on() {
   Wire.endTransmission(true);
 }
 
-void led_breath_power_off() {
+void ledBreathPowerOff() {
 
   Wire.endTransmission(true);
-  pwm_begin();
-  pwm_set_frequency(60);
+  pwmBegin();
+  pwmSetFrequency(60);
 
-  pwm_set_value(BLUE, 0, OFF);   //when pi poweroff , we use RED led
+  pwmSetValue(BLUE, 0, OFF);   //when pi poweroff , we use RED led
 
   // OFF  -> RUNING ++
   breath(OFF, RUNING, RED);
@@ -90,5 +90,25 @@ void led_breath_power_off() {
 
   // RUNING -> OFF --
   breath(RUNING, OFF, RED);
-  pwm_set_value(RED, 0, OFF);   //when pi poweroff , we use RED led
+  pwmSetValue(RED, 0, OFF);   //when pi poweroff , we use RED led
+}
+
+void breathLedSetup(){
+  Wire.endTransmission(true);
+  pwmBegin();
+  pwmSetFrequency(60);
+
+  pwmSetValue(BLUE, 0, OFF);   //when pi poweroff , we use RED led
+  pwmSetValue(RED, 0, OFF);   //when pi poweroff , we use RED led
+
+}
+
+void powerOffLedBreathUp() {
+  // OFF  -> RUNING ++
+  breath(OFF, RUNING, RED);
+}
+
+void powerOffLedBreathDown() {
+  // OFF  -> RUNING ++
+  breath(RUNING, OFF, RED);
 }
