@@ -48,9 +48,6 @@ DIGITAL_CHANNEL = [17, 18, 27, 22, 23, 24, 25, 4]	# wiringPi pin 0~7 -> BCM GPIO
 MOTOR_A = 0
 MOTOR_B = 1
 
-ON 	= 1
-OFF = 0
-
 PWM_ADDRESS = 0x40
 SYS_ADDRESS = 0x10
 
@@ -127,6 +124,9 @@ class _Basic_class(object):
 class PiRobot(_Basic_class):
 
 	_class_name = 'PiRobot'
+	
+	ON 	= 1
+	OFF = 0
 
 	def __init__(self):
 		self._volume = 70

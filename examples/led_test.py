@@ -24,7 +24,7 @@ def setup():
 	print "|                   LED Ring test                     |"
 	print "|-----------------------------------------------------|"
 	print "|                                                     |"
-	print "|         Breath Blue leds breath and then red leds   |"
+	print "|         Breath Blue leds breath and then Red leds   |"
 	print "|                                                     |"
 	print "|                                           SunFounder|"
 	print "|=====================================================|"
