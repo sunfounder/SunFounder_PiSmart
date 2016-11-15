@@ -135,6 +135,9 @@ class PiRobot(_Basic_class):
 		self.debug('Init PiRobot object complete')
 
 	def servo_switch(self, on_off):
+		self.pwm_switch(on_off)
+
+	def pwm_switch(self, on_off):
 		if on_off not in (0, 1):
 			raise ValueError ("On_off set must be .ON(1) or .OFF(0), not \"{0}\".".format(on_off))
 		if on_off == 1:
@@ -283,7 +286,7 @@ class PiRobot(_Basic_class):
 
 	@capture_volume.setter
 	def capture_volume(self, value):
-		capture_volume_id = self.get_capture_volume_id()
+		capture_volume_id = self._get_capture_volume_id()
 		if value not in range(0, 101):
 			raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(value))
 		self._capture_volume = _map(value, 0, 100, 0, 16)
@@ -291,7 +294,7 @@ class PiRobot(_Basic_class):
 		self.run_command(cmd)
 		return 0
 
-	def get_capture_volume_id(self):
+	def _get_capture_volume_id(self):
 		all_controls = self.run_command("sudo amixer -c 1 controls")
 		all_controls = all_controls.split('\n')
 		capture_volume = ''
@@ -309,12 +312,12 @@ class PiRobot(_Basic_class):
 class PWM(_Basic_class):
 	def __init__(self, channel):
 		if channel not in range(0, 16):
-			raise ValueError("Servo channel \"{0}\" is not in (0, 15).".format(channel))
+			raise ValueError("PWM channel \"{0}\" is not in (0, 15).".format(channel))
 		self.channel = channel
 
-	def set_PWM(self, on):
-		bus.write_byte_data(PWM_ADDRESS, _LED0_ON_L+4*self.channel, 0)
-		bus.write_byte_data(PWM_ADDRESS, _LED0_ON_H+4*self.channel, 0)
+	def set_PWM(self, on, off=0):
+		bus.write_byte_data(PWM_ADDRESS, _LED0_ON_L+4*self.channel, off & 0xFF)
+		bus.write_byte_data(PWM_ADDRESS, _LED0_ON_H+4*self.channel, off >> 8)
 		bus.write_byte_data(PWM_ADDRESS, _LED0_OFF_L+4*self.channel, on & 0xFF)
 		bus.write_byte_data(PWM_ADDRESS, _LED0_OFF_H+4*self.channel, on >> 8)
 
@@ -336,13 +339,16 @@ class Servo(PWM):
 		analog_value = int(float(pulse_wide) / 1000000 * self._FREQUENCY * 4096)
 		return analog_value
 		
-	def turn(self, angle):
+	def write(self, angle):
 		if angle<0 or angle>180:
 			raise ValueError("Servo \"{0}\" turn angle \"{1}\" is not in (0, 180).".format(self.channel, angle))		
 		value = self._angle_to_analog(angle)
 		value += self._offset
 		self.set_PWM(value)
 		self.debug('Servo turn. channel: [%d] to angle: [%d]' % (self.channel, angle))
+
+	def turn(self, angle):
+		self.write(angle)
 
 	@property
 	def offset(self):
@@ -361,14 +367,19 @@ class LED(PWM):
 	DIMING      = 10
 	OFF         = 0
 	
+	LED_COLOR = {'red':9, 'blue':8}
+
 	BRIGHT_X = 100			#how long it will be bright 
 	SLEEP_TIME  = 0.02
 
 	_class_name = 'LED'
 
 	def __init__(self, channel):
+		if isinstance(channel, str):
+			if channel.lower() in self.LED_COLOR:
+				channel = self.LED_COLOR.get(channel.lower())
 		if channel not in (8, 9):
-			raise ValueError ("Led channel should be .RED(9) or .BLUE(8), not \"{0}\".".format(channel))
+			raise ValueError ('Led channel should be "RED"(9) or "BLUE"(8), not \"{0}\".'.format(channel))
 		self.channel = channel
 		self.debug('Init LED channel [%d] complate. (8 = BLUE, 9 = RED)' % self.channel)
 
@@ -394,19 +405,18 @@ class LED(PWM):
 		self.debug('Set LED [%d] OFF.' % self.channel)
 
 class Motor(PWM):
-	MOTOR_CHANNEL = {10:5, 11:6}
+	MOTOR_CHANNEL = {'motora':0, 'motorb':1, 10:5, 11:6}
 
 	OFF = 0
 
 	_class_name = 'Motor'
 
 	def __init__(self, channel, forward=0):
-		if channel == 'Motor A':
-			channel = 0
-		if channel == 'Motor B':
-			channel = 1
+		if isinstance(channel, str):
+			if channel.lower() in self.MOTOR_CHANNEL:
+				channel = self.MOTOR_CHANNEL.get(channel.lower())
 		if channel not in (0, 1):
-			raise ValueError ("Motor channel should be .MOTOR_A(0) or .MOTOR_B(1), not \"{0}\".".format(channel))
+			raise ValueError ('Motor channel should be "MotorA"(0) or "MotorB"(1), not "{0}".'.format(channel))
 		self.channel = channel + 10
 
 		GPIO.setmode(GPIO.BCM)
