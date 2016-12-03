@@ -9,12 +9,12 @@
 * Update      : Cavon    2016-08-09: Update debug setting
 **********************************************************************
 '''
-from pirobot import PiRobot, TTS
+from pismart import PiSmart, TTS
 
 global string
 string = ''
 
-p = PiRobot()
+p = PiSmart()
 p.DEBUG = True
 p.volume = 100
 

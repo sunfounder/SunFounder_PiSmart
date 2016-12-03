@@ -187,35 +187,16 @@ sudo apt-get upgrade -y
 	
 #speakpython dictionary 
 	echo 'Copying files...'
-	cd /home/pi/SunFounder_PiRobot
-	chmod +x ./pirobot/MakeSpeechProject.py
-    chmod +x ./pirobot/SpeakPythonMakeDB.py
-    chmod +x ./pirobot/SpeakPythonMakeJSGF.py
-    chmod +x ./bin/pirobotcmd
-    sudo cp ./pirobot/MakeSpeechProject.py /usr/local/bin
-    sudo cp ./pirobot/SpeakPythonMakeDB.py /usr/local/bin
-    sudo cp ./pirobot/SpeakPythonMakeJSGF.py /usr/local/bin
-    sudo cp ./bin/pirobotcmd /usr/local/bin
-    sudo cp ./pirobot/model-5 /usr/local/bin
-    sudo cp ./pirobot/pocketsphinx.dic /usr/local/bin
+	cd /home/pi/SunFounder_PiSmart
+	chmod +x ./pismart/MakeSpeechProject.py
+    chmod +x ./pismart/SpeakPythonMakeDB.py
+    chmod +x ./pismart/SpeakPythonMakeJSGF.py
+    sudo cp ./pismart/MakeSpeechProject.py /usr/local/bin
+    sudo cp ./pismart/SpeakPythonMakeDB.py /usr/local/bin
+    sudo cp ./pismart/SpeakPythonMakeJSGF.py /usr/local/bin
+    sudo cp ./pismart/model-5 /usr/local/bin
+    sudo cp ./pismart/pocketsphinx.dic /usr/local/bin
 	sudo cp /usr/local/lib/libsphinxbase.so.3 /usr/lib
 	echo 'done'
 
 	echo 'all done, enjoy it'
-# Usage
-
-#- Stick MakeSpeechProject.py, SpeakPython (whole folder), SpeakPythonMakeDB.py inside of the project where your main python application rests.
-
-#```
-#	cp speakpython/SpeakPython/bin/* [my project directory]
-#```
-
-#- run 'python MakeSpeechProject.py [appName] [sps file name]' to generate your speech application database
-#- An example is 'python MakeSpeechProject.py calc calc.sps' for the calculator app
-#- Theoretically a folder can be used in place of calc.sps (untested)
-
-#Congrats! If everything is typed and set up correctly, your speech application should be working.
-
-#Take a look at the [Usage Patterns](https://bitbucket.org/matthew3/speakpython/wiki/Usage%20Patterns) of SpeakPython. It's really easy!
-
-#Take a look at the [SPS file format](https://bitbucket.org/matthew3/speakpython/wiki/The%20SPS%20File%20Format) for instructions on creating a file used for recognition.

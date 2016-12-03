@@ -10,10 +10,10 @@
 *               Cavon    2016-08-23 Change I/O port
 **********************************************************************
 '''
-from pirobot import PiRobot
+from pismart import PiSmart
 import time
 
-p = PiRobot()
+p = PiSmart()
 p.DEBUG = True
 
 def setup():

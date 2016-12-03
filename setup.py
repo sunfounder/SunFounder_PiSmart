@@ -10,14 +10,14 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='SunFounder_PiRobot',
+    name='SunFounder_PiSmart',
    
     version='1.0.0',
 
-    description='Python package for PiRobot from SunFounder',
+    description='Python package for PiSmart from SunFounder',
     long_description=long_description,
 
-    url='https://github.com/sunfounder/SunFouner_PiRobot',
+    url='https://github.com/sunfounder/SunFouner_PiSmart',
 
     author='SunFounder',
     author_email='support@sunfounder.com',
@@ -35,7 +35,7 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
 
-    keywords='RaspberryPi PiRobot setuptools development',
+    keywords='RaspberryPi PiSmart setuptools development',
 
     packages=find_packages(exclude=['example', 'docs', 'tests*', 'offset', 'log']),
 
@@ -52,7 +52,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'pirobot=pirobot:main',
+            'pismart=pismart:main',
         ],
     },
 )

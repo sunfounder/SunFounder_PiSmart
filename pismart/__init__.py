@@ -13,8 +13,6 @@ from distutils.spawn import find_executable
 
 RUNTIME = 1000
 
-_BOX_DIR_= '/home/pi/SunFounder_PiRobot/'
-
 _LED0_ON_L          = 0x06
 _LED0_ON_H          = 0x07
 _LED0_OFF_L         = 0x08
@@ -122,9 +120,9 @@ class _Basic_class(object):
 			output = f.read()
 			return output
 
-class PiRobot(_Basic_class):
+class PiSmart(_Basic_class):
 
-	_class_name = 'PiRobot'
+	_class_name = 'PiSmart'
 	
 	ON 	= 1
 	OFF = 0
@@ -133,7 +131,7 @@ class PiRobot(_Basic_class):
 		self._volume = 70
 		self._power_type = '2S'
 		self.power_type = self._power_type
-		self.debug('Init PiRobot object complete')
+		self.debug('Init PiSmart object complete')
 
 	def servo_switch(self, on_off):
 		self.pwm_switch(on_off)
@@ -779,7 +777,7 @@ def main_setup():
 		+ usage_dic['speaker_switch'] \
 		+ usage_dic['power_type'] \
 		+ usage_dic['get']
-	p = PiRobot() 
+	p = PiSmart() 
 
 def usage(opt = 'basic'):
 	print usage_dic[opt]

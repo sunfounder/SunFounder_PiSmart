@@ -10,13 +10,13 @@
 *               Cavon    2016-08-23  Update setup debug
 **********************************************************************
 '''
-from pirobot import PiRobot, Servo
+from pismart import PiSmart, Servo
 import time
 
 Servo1 = Servo(0)
 Servo1.DEBUG = True
 
-p = PiRobot()
+p = PiSmart()
 p.DEBUG = True
 
 p.servo_switch(1)    #on = 1 ; off = 0

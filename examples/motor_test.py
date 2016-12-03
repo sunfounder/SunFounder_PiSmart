@@ -10,11 +10,11 @@
 *               Cavon    2016-09-27: Add " " cmd to reverse
 **********************************************************************
 '''
-from pirobot import PiRobot, Motor
+from pismart import PiSmart, Motor
 import time
 import RPi.GPIO
 
-p = PiRobot()
+p = PiSmart()
 motorA = Motor("MotorA")
 motorB = Motor("MotorB")
 

@@ -10,7 +10,7 @@
 *               Cavon    2016-08-23 Update set debug
 **********************************************************************
 '''
-from pirobot import LED
+from pismart import LED
 import time
 
 blue_leds = LED(LED.BLUE)
