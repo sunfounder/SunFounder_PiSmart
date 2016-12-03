@@ -15,8 +15,8 @@ import time
 import RPi.GPIO
 
 p = PiRobot()
-motorA = Motor("Motor A")
-motorB = Motor("Motor B")
+motorA = Motor("MotorA")
+motorB = Motor("MotorB")
 
 p.DEBUG = True
 motorA.DEBUG = True

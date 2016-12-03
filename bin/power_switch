@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-
-import RPi.GPIO as GPIO
 import os
 import time
+import smbus
 import sys
 
-power_off_detect_pin = 13
+bus = smbus.SMBus(1)
+SYS_ADDRESS = 0x10
 
 def usage():
 	print "Usage: power_switch [cmd] "
@@ -13,9 +13,31 @@ def usage():
 	print "    enable       enable power switch "
 	print "    disable      disable power switch\n\n"
 
+def _read_sys_byte(reg, delay=0):
+	#number = bus.read_word_data(SYS_ADDRESS, reg)
+	bus.write_byte(SYS_ADDRESS, reg)
+	#print 'reg:',hex(reg)
+	if delay != 0:
+		time.sleep(delay)
+	number = bus.read_byte(SYS_ADDRESS)
+	if delay != 0:
+		time.sleep(delay)
+	#print 'read:',number
+	return number
+
+def read_shut_down_signal(ignore_false=True):
+	value = 0
+	try:
+		value = _read_sys_byte(0x1c, delay=0.5)
+	except Exception, e:
+		value = -1
+		if not ignore_false:
+			print e	
+	
+	return value
+
 def setup():
-	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(power_off_detect_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	global is_enabled
 	if len(sys.argv)<2:
 			print "Too few argument\n"
 			usage()
@@ -27,10 +49,10 @@ def setup():
 	else:
 		if sys.argv[1] == "enable":
 			print "power_switch enabled"
-			GPIO.add_event_detect(power_off_detect_pin, GPIO.FALLING, power_off_detect)
+			is_enabled = True
 		elif sys.argv[1] == "disable":
 			print "power_switch disabled"
-			GPIO.remove_event_detect(power_off_detect_pin)
+			is_enabled = False
 		elif sys.argv[1] == "help":
 			usage()
 			quit()
@@ -39,12 +61,12 @@ def setup():
 			usage()
 			quit()
 
-def power_off_detect(channel):
-	os.system("sudo poweroff")
-
 def main():
 	while True:
-
+		if is_enabled:
+			a = read_shut_down_signal(ignore_false=False)
+			if a == 2:
+				os.system("sudo poweroff")
 		time.sleep(1)
 
 if __name__ == '__main__':

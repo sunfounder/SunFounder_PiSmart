@@ -8,6 +8,7 @@ import os
 import commands
 import tempfile
 import subprocess
+import sys
 from distutils.spawn import find_executable
 
 RUNTIME = 1000
@@ -362,9 +363,9 @@ class LED(PWM):
 
 	RED         = 9
 	BLUE        = 8
-	BRIGHT      = 60
+	BRIGHT      = 75
 	RUNING      = 30
-	DIMING      = 10
+	DIMING      = 5
 	OFF         = 0
 	
 	LED_COLOR = {'red':9, 'blue':8}
@@ -694,3 +695,183 @@ class TTS(_Basic_class):
 			self._gap   = gap
 			self._pitch = pitch
 
+
+def main_setup():
+	global usage_dic
+	usage_dic = {
+		'basic'          :'',
+		'speaker_volume' :'',
+		'speaker_volume' :'',
+		'motor_switch'   :'',
+		'servo_switch'   :'',
+		'speaker_switch' :'',
+		'power_type'     :'',
+		'get'            :'',
+		'all'            :'',
+	}
+	usage_dic['basic']          = \
+		  'Usage:\n' \
+		+ '  pirobot [option] [control]\n\n' \
+		+ 'Options:\n' \
+		+ '    speaker_volume    Control the volume for speaker\n' \
+		+ '    capture_volume    Control the volume for microphone\n' \
+		+ '    motor_switch      Switch for motor\n' \
+		+ '    servo_switch      Switch for servo\n' \
+		+ '    speaker_switch    Switch for speaker\n' \
+		+ '    power_type        Change power type for alarm\n' \
+		+ '    get               Get informations you want\n'
+	usage_dic['speaker_volume'] = \
+		  'Usage:\n' \
+		+ '  pirobot speaker_volume [volume]\n\n' \
+		+ 'volume:      Specified a volume in [0, 100]\n\n' \
+		+ 'Example:\n' \
+		+ '  pirobot speaker_volume 100  # Set speaker volume to 100%\n'
+	usage_dic['capture_volume'] = \
+		  'Usage:\n' \
+		+ '  pirobot capture_volume [volume]\n\n' \
+		+ 'volume:      Specified a volume in [0, 100]\n\n' \
+		+ 'Example:\n' \
+		+ '  pirobot capture_volume 100  # Set capture volume to 100%\n'
+	usage_dic['motor_switch']   = \
+		  'Usage:\n' \
+		+ '  pirobot motor_switch [on/off]\n\n' \
+		+ 'on/off:      Turn the motor switch on/off with 1/0\n\n' \
+		+ 'Example:\n' \
+		+ '  pirobot motor_switch 1  # Turn the motor switch on\n'
+	usage_dic['servo_switch']   = \
+		  'Usage:\n' \
+		+ '  pirobot servo_switch [on/off]\n\n' \
+		+ 'on/off:      Turn the servo switch on/off with 1/0\n\n' \
+		+ 'Example:\n' \
+		+ '  pirobot servo_switch 1  # Turn the servo switch on\n'
+	usage_dic['pwm_switch']   = \
+		  'Usage:\n' \
+		+ '  pirobot pwm_switch [on/off]\n\n' \
+		+ 'on/off:      Turn the pwm switch on/off with 1/0\n\n' \
+		+ 'Example:\n' \
+		+ '  pirobot pwm_switch 1  # Turn the pwm switch on\n'
+	usage_dic['speaker_switch'] = \
+		  'Usage:\n' \
+		+ '  pirobot speaker_switch [on/off]\n\n' \
+		+ 'on/off:      Turn the speaker switch on/off with 1/0\n\n' \
+		+ 'Example:\n' \
+		+ '  pirobot speaker_switch 1  # Turn the speaker switch on\n'
+	usage_dic['power_type']     = \
+		  'Usage:\n' \
+		+ '  pirobot power_type [type]\n\n' \
+		+ 'type:      Specified a power type in 2S/3S/DC, indicate 2S/3S Li-po battery or DC power\n\n' \
+		+ 'Example:\n' \
+		+ '  pirobot power_type 2S  # Specified the power type as 2S\n'
+	usage_dic['get']            = \
+		  'Usage:\n' \
+		+ '  pirobot get [info]\n\n' \
+		+ 'info:      Specified an information.\n\n' \
+		+ 'Avalible informations: \n' \
+		+ '  voltage      Get power voltage\n' \
+		+ 'Example:\n' \
+		+ '  pirobot get voltage  # Get current power voltage\n'
+	usage_dic['all']            = \
+		  usage_dic['basic'] \
+		+ usage_dic['speaker_volume'] \
+		+ usage_dic['capture_volume'] \
+		+ usage_dic['motor_switch'] \
+		+ usage_dic['servo_switch'] \
+		+ usage_dic['speaker_switch'] \
+		+ usage_dic['power_type'] \
+		+ usage_dic['get']
+	p = PiRobot() 
+
+def usage(opt = 'basic'):
+	print usage_dic[opt]
+	quit()
+
+def check_command():
+	argv_len = len(sys.argv)
+
+	if argv_len < 2:
+		usage()
+	else:
+		option = sys.argv[1]
+
+	if argv_len < 3:
+		control = None
+	else:
+		control = sys.argv[2]
+
+def on_off_handle(on_off):
+	if isinstant(on_off, str):
+		on_off=on_off.lower()
+		if on_off == 'on':
+			on_off = 1
+		elif on_off == 'off':
+			on_off = 0
+		else:
+			return false
+	else:
+		try:
+			on_off = int(control)
+		except:
+			return false
+	return on_off
+
+def main():
+	main_setup()
+	check_command()
+
+	if option in ['help', 'h']:
+		if option == None:
+			usage()
+		else:
+			if control in usage_dic:
+				usage(control)
+			else:
+				usage()
+	elif option == 'speaker_volume':
+		try:
+			control = int(control)
+		except:
+			usage(speaker_volume)
+		if control not in range(0, 101):
+			usage(speaker_volume)
+		p.volume = control
+	elif option == 'capture_volume':
+		try:
+			control = int(control)
+		except:
+			usage(capture_volume)
+		if control not in range(0, 101):
+			usage(capture_volume)
+		p.capture_volume = control
+	elif option == 'motor_switch':
+		control = on_off_handle(contorl)
+		if control not in [0, 1]:
+			usage(motor_switch)
+		p.motor_switch(control)
+	elif option == 'speaker_switch':
+		control = on_off_handle(contorl)
+		if control not in [0, 1]:
+			usage(speaker_switch)
+		p.speaker_switch(control)
+	elif option == 'servo_switch':
+		control = on_off_handle(contorl)
+		if control not in [0, 1]:
+			usage(servo_switch)
+		p.servo_switch(control)
+	elif option == 'pwm_switch':
+		control = on_off_handle(contorl)
+		if control not in [0, 1]:
+			usage(pwm_switch)
+		p.pwm_switch(control)
+	elif option == 'power_type':
+		if control not in ['2S', '3S', 'DC']:
+			usage(power_type)
+		p.power_type = control
+	elif option == 'get':
+		if control == 'voltage':
+			print "Power voltage now is:", p.read_battery()
+		else:
+			usage(get)
+	else:
+		print 'Option Error'
+		usage()
+		
