@@ -5,9 +5,9 @@ import pickle;
 import sys, os;
 import re;
 
-from pismart.SpeakPython import SpeakPython;
-from pismart.SpeakPythonLexer import SpeakPythonLexer;
-from pismart.SpeakPythonParser import SpeakPythonParser;
+from pismart.SpeakPython.SpeakPython import SpeakPython;
+from pismart.SpeakPython.SpeakPythonLexer import SpeakPythonLexer;
+from pismart.SpeakPython.SpeakPythonParser import SpeakPythonParser;
 
 #sort results based on length of labels
 def sortResults(results):

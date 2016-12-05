@@ -1,3 +1,4 @@
+from basic import _Basic_class
 import requests
 import json
 

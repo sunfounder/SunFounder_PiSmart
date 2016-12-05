@@ -21,8 +21,8 @@ import pickle;
 import sys, os;
 import re;
 
-from pismart.SpeakPythonJSGFLexer import SpeakPythonJSGFLexer;
-from pismart.SpeakPythonJSGFParser import SpeakPythonJSGFParser;
+from pismart.SpeakPython.SpeakPythonJSGFLexer import SpeakPythonJSGFLexer;
+from pismart.SpeakPython.SpeakPythonJSGFParser import SpeakPythonJSGFParser;
 
 def parse(fileList, dirName):
 

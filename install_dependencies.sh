@@ -188,14 +188,8 @@ sudo apt-get upgrade -y
 #speakpython dictionary 
 	echo 'Copying files...'
 	cd /home/pi/SunFounder_PiSmart
-	chmod +x ./pismart/MakeSpeechProject.py
-    chmod +x ./pismart/SpeakPythonMakeDB.py
-    chmod +x ./pismart/SpeakPythonMakeJSGF.py
-    sudo cp ./pismart/MakeSpeechProject.py /usr/local/bin
-    sudo cp ./pismart/SpeakPythonMakeDB.py /usr/local/bin
-    sudo cp ./pismart/SpeakPythonMakeJSGF.py /usr/local/bin
-    sudo cp ./pismart/model-5 /usr/local/bin
-    sudo cp ./pismart/pocketsphinx.dic /usr/local/bin
+    sudo cp ./bin/* /usr/local/bin
+    sudo cp ./data/* /usr/local/bin
 	sudo cp /usr/local/lib/libsphinxbase.so.3 /usr/lib
 	echo 'done'
 
