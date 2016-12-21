@@ -1,10 +1,11 @@
 from basic import _Basic_class
+import SpeakPythonRecognizer
 
 class STT(_Basic_class):
     _class_name = 'STT'
-    import SpeakPythonRecognizer
 
     def __init__(self, dictionary, name_calling=False, timeout=5.0, dictionary_update=False):
+        self.logger_setup()
         self.name_calling = name_calling
         self.dictionary = dictionary
         self._result = 'None'

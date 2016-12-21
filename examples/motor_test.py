@@ -10,7 +10,8 @@
 *               Cavon    2016-09-27: Add " " cmd to reverse
 **********************************************************************
 '''
-from pismart import PiSmart, Motor
+from pismart.pismart import PiSmart
+from pismart.motor import Motor
 import time
 import RPi.GPIO
 

@@ -1,74 +1,24 @@
 #!/usr/bin/env python
+
 import os
-import time
-import smbus
-import sys
+import RPi.GPIO as GPIO
+from time import sleep
 
-bus = smbus.SMBus(1)
-SYS_ADDRESS = 0x10
-
-def usage():
-	print "Usage: power_switch [cmd] "
-	print "    help         display the help and exit"
-	print "    enable       enable power switch "
-	print "    disable      disable power switch\n\n"
-
-def _read_sys_byte(reg, delay=0):
-	#number = bus.read_word_data(SYS_ADDRESS, reg)
-	bus.write_byte(SYS_ADDRESS, reg)
-	#print 'reg:',hex(reg)
-	if delay != 0:
-		time.sleep(delay)
-	number = bus.read_byte(SYS_ADDRESS)
-	if delay != 0:
-		time.sleep(delay)
-	#print 'read:',number
-	return number
-
-def read_shut_down_signal(ignore_false=True):
-	value = 0
-	try:
-		value = _read_sys_byte(0x1c, delay=0.5)
-	except Exception, e:
-		value = -1
-		if not ignore_false:
-			print e	
-	
-	return value
+pin = 13
 
 def setup():
-	global is_enabled
-	if len(sys.argv)<2:
-			print "Too few argument\n"
-			usage()
-			quit()
-	elif len(sys.argv)>2:
-			print "Too many arguments\n"
-			usage()
-			quit()
-	else:
-		if sys.argv[1] == "enable":
-			print "power_switch enabled"
-			is_enabled = True
-		elif sys.argv[1] == "disable":
-			print "power_switch disabled"
-			is_enabled = False
-		elif sys.argv[1] == "help":
-			usage()
-			quit()
-		else:
-			print "Wrong argument\n"
-			usage()
-			quit()
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    GPIO.setup(pin, GPIO.IN)
 
 def main():
-	while True:
-		if is_enabled:
-			a = read_shut_down_signal(ignore_false=False)
-			if a == 2:
-				os.system("sudo poweroff")
-		time.sleep(1)
+    while True:
+        if GPIO.input(pin) == 1:
+            print 'poweroff!'
+            GPIO.setup(pin, GPIO.OUT)
+            os.system('poweroff')
+        sleep(0.1)
 
 if __name__ == '__main__':
-	setup()
-	main()
+    setup()
+    main()

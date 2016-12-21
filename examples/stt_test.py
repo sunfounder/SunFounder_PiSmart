@@ -10,10 +10,12 @@
 *               Cavon    2016-08-24    Update debug setting
 **********************************************************************
 '''
-from pismart import Speech_Recognition, PiSmart, TTS
+from pismart.pismart import PiSmart
+from pismart.stt import STT
+from pismart.tts import TTS
 
 p = PiSmart()
-sr = Speech_Recognition('sample', name_calling=True, timeout=10.0, dictionary_update=True)
+sr = STT('sample', name_calling=True, timeout=10.0, dictionary_update=True)
 sr.DEBUG = True
 p.speaker_switch(1)
 

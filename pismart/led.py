@@ -10,25 +10,37 @@ class LED(PWM):
     DIMING      = 5
     OFF         = 0
     
-    LED_COLOR = {'red':9, 'blue':8}
+    LED_PIN = {'red':9, 'blue':8}
+    LED_COLOR = {9:'LED.RED', 8:'LED.BLUE'}
 
     BRIGHT_X = 100          #how long it will be bright 
     SLEEP_TIME  = 0.02
 
     _class_name = 'LED'
 
-    def __init__(self, channel):
-        if isinstance(channel, str):
-            if channel.lower() in self.LED_COLOR:
-                channel = self.LED_COLOR.get(channel.lower())
-        if channel not in (8, 9):
-            raise ValueError ('Led channel should be "RED"(9) or "BLUE"(8), not \"{0}\".'.format(channel))
-        self.channel = channel
+    def __init__(self, channel=None):
         self.logger_setup()
-        self._debug('Init LED channel [%d] complate. (8 = BLUE, 9 = RED)' % self.channel)
+        self.channel = channel
+        self.brightness = 0
+
+    @property
+    def channel(self):
+        return self._channel
+
+    @channel.setter
+    def channel(self, channel):
+        if isinstance(channel, str):
+            if channel.lower() in self.LED_PIN:
+                channel = self.LED_PIN.get(channel.lower())
+        elif channel not in range(10):
+            raise ValueError("LED channel \"{0}\" is not in (0, 9).".format(channel))
+        elif channel not in (8, 9):
+            self.warning('Led channel "%s" is not the ring. The ring should be "RED"(9) or "BLUE"(8), '%channel)
+        self._channel = channel
+        self._debug("Channel set to [%s]" % self._channel)
 
     def _get_pwm_from_brightness(self, brightness):
-        pwm_value = _map(brightness, 0, 100, 0, 4095)
+        pwm_value = self._map(brightness, 0, 100, 0, 4095)
         return int(pwm_value)
     @property
     def brightness(self):
@@ -41,7 +53,10 @@ class LED(PWM):
         self._brightness = value
         pwm_value = self._get_pwm_from_brightness(self._brightness)
         self.set_PWM(pwm_value)
-        self._debug('Set LED [%d] to [%d].' % (self.channel, self._brightness))
+        self._debug('Set LED [%s] to [%s].' % (self.LED_COLOR[self.channel], self._brightness))
+
+    def write(self, value):
+        self.brightness = value
 
     def off(self):
         pwm_value = self._get_pwm_from_brightness(self.OFF)

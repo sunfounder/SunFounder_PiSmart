@@ -9,14 +9,15 @@
 * Update      : Cavon    2016-08-09: Update debug setting
 **********************************************************************
 '''
-from pismart import PiSmart, TTS
+from pismart.pismart import PiSmart
+from pismart.tts import TTS
 
 global string
 string = ''
 
 p = PiSmart()
 p.DEBUG = True
-p.volume = 100
+p.speaker_volume = 100
 
 tts = TTS('pico')
 
@@ -31,13 +32,13 @@ def setup():
 	print "===================================================="
 	p.speaker_switch(1)
 	greeting = 'Hello, SunFounder'
-	tts.say(greeting)
+	tts.say = greeting
 
 def main():
 	global string
 	while True:
 		string = raw_input("say:")
-		tts.say(string)
+		tts.say = string
 
 def destroy():
 	p.speaker_switch(0)
