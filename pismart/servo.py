@@ -3,16 +3,16 @@ from pwm import PWM
 
 class Servo(PWM):
     _class_name = 'Servo'
+    ALL = range(8)
 
     def __init__(self, channel, offset=0):
         self.logger_setup()
         self.offset = offset
         #self.pulse_width_cal()
-        self.frequency          = 50
-        self.min_pulse_width    = 544
+        self.frequency          = 60
+        self.min_pulse_width    = 600
         self.max_pulse_width    = 2400
-        if channel != None:
-            self.channel = channel
+        self.channel = channel
 
     @property
     def min_pulse_width(self):
@@ -45,14 +45,25 @@ class Servo(PWM):
     @property
     def channel(self):
         return self._channel
-
-    @channel.setter
+    # over write parent class PWM property channel
+    @channel.setter      
     def channel(self, channel):
-        if channel not in range(8):
-            raise ValueError("Servo channel \"{0}\" is not in (0, 7).".format(channel))
+        if isinstance(channel, list):  # Argument channel is a list
+            for i in channel:
+                self.is_channel_available(i)
+            self.is_channel_list = True
+        elif isinstance(channel, int):  # Argument channel is int
+            self.is_channel_available(channel)
+            self.is_channel_list = False
+        else:
+            raise TypeError("PWM channel must be integer or list of integer")
         self._channel = channel
         self._debug("Channel set to %s" % self._channel)
         self.angle = 90
+    # over write parent class PWM is_channel_available property
+    def is_channel_available(self, channel):
+        if channel not in range(8):
+            raise ValueError("Servo channel \"{0}\" is not in (0, 7).".format(channel))
 
     def _angle_to_analog(self, angle):
         pulse_wide   = self._map(angle, 0, 180, self._min_pulse_width, self._max_pulse_width)
@@ -76,7 +87,7 @@ class Servo(PWM):
         self._debug('Servo turn angle: [%d], PWM value: [%d]' % (angle, value))
         value += self._offset
         self._debug('Servo turn offset: [%d], PWM value: [%d]' % (self._offset, value))
-        self._info('Servo turn channel: [%d] to angle: [%d]' % (self.channel, angle))
+        self._info('Servo turn channel: [%s] to angle: [%d]' % (self.channel, angle))
         self.set_PWM(value)
 
     def turn(self, angle):

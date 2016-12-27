@@ -41,16 +41,22 @@ def main():
 	speed = 0
 	while True:
 		value = raw_input("input: ")
+		
 		if value == " ":
 			direction = not direction
 		else:
-			speed = int(value)
+			try:
+				speed = int(value)
+			except:
+				print "wrong input, input value: 0~100"
 		if direction:
 			motorA.forward(speed)
 			motorB.forward(speed)
+			print "direction: Forward"
 		else:
 			motorA.backward(speed)
 			motorB.backward(speed)
+			print "direction: Backward"
 
 def destroy():
 	motorA.stop()

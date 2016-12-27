@@ -3,6 +3,8 @@ from pwm import PWM
 import RPi.GPIO as GPIO
 
 class Motor(PWM):
+    MotorA = 0
+    MotorB = 1
     MOTOR_CHANNEL = {'motora':0, 'motorb':1, 10:5, 11:6}
 
     OFF = 0
@@ -19,6 +21,7 @@ class Motor(PWM):
         self.channel = channel + 10
 
         GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
         GPIO.setup(self.MOTOR_CHANNEL[self.channel], GPIO.OUT)
         if forward not in (0, 1):
             raise ValueError ("Forward direction should be 0 or 1, not \"{0}\".".format(forward))

@@ -183,17 +183,17 @@ def stt():
     except KeyboardInterrupt:
        pismart.STT_end()
 
+def mic():
+    import os
+    pismart.speaker_switch(pismart.ON)
+    print "Record 5 seconds, and then play the voice"
+    os.system('arecord -D "plughw:1,0" -d 5 > test.wav && omxplayer test.wav')
+
 def volume_test():
     for i in range(100, -1, -10):
         print 'Set speaker volume to %s...' % i
         pismart.speaker_volume = i
         pismart.Say = 'This is %s percent volume' % i
-
-def mic():
-    import os
-    pismart.speaker_switch(pismart.ON)
-    print "Record 20 seconds, and then play the voice"
-    os.system('arecord -D "plughw:1,0" -d 20 > test.wav && omxplayer test.wav')
 
 if __name__ == '__main__':
     try:

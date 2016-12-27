@@ -40,10 +40,21 @@ class PWM(_Basic_class):
 
     @channel.setter
     def channel(self, channel):
-        if channel not in range(16):
-            raise ValueError("PWM channel \"{0}\" is not in (0, 15).".format(channel))
+        if isinstance(channel, list):
+            for i in channel:
+                self.is_channel_available(i)
+            self.is_channel_list = True
+        elif isinstance(channel, int):
+            self.is_channel_available(channel)
+            self.is_channel_list = False
+        else:
+            raise TypeError("PWM channel must be integer or list of integer")
         self._channel = channel
         self._debug("Channel set to %s" % self._channel)
+
+    def is_channel_available(self, channel):
+        if channel not in range(16):
+            raise ValueError("PWM channel \"{0}\" is not in (0, 15).".format(channel))
 
     @property
     def frequency(self):
@@ -75,11 +86,19 @@ class PWM(_Basic_class):
         if on<off:
             raise ValueError('PWM ontime value must larger than offtime. "{}" is lower than "{}".'.format(on, off))
         elif on < 0 or on > 4095 or off < 0 or off > 4095:
-            raise ValueError('ontime or offtime must be in(0, 4095)')  
-        self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_ON_L+4*self.channel, off & 0xFF)
-        self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_ON_H+4*self.channel, off >> 8)
-        self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_OFF_L+4*self.channel, on & 0xFF)
-        self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_OFF_H+4*self.channel, on >> 8)
+            raise ValueError('ontime or offtime must be in(0, 4095)')
+        if not self.is_channel_list :
+            channel = [self.channel]
+            self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_ON_L+4*self.channel, off & 0xFF)
+            self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_ON_H+4*self.channel, off >> 8)
+            self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_OFF_L+4*self.channel, on & 0xFF)
+            self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_OFF_H+4*self.channel, on >> 8)
+        else:
+            for channel in self.channel:
+                self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_ON_L+4*channel, off & 0xFF)
+                self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_ON_H+4*channel, off >> 8)
+                self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_OFF_L+4*channel, on & 0xFF)
+                self.bus.write_byte_data(self.PWM_ADDRESS, self._LED0_OFF_H+4*channel, on >> 8)
 
     @property
     def value(self):

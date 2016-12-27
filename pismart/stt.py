@@ -1,5 +1,5 @@
 from basic import _Basic_class
-import SpeakPythonRecognizer
+import SpeakPython.SpeakPythonRecognizer as SpeakPythonRecognizer 
 
 class STT(_Basic_class):
     _class_name = 'STT'
@@ -19,6 +19,7 @@ class STT(_Basic_class):
             self._awake = False
             self.threading = threading
         self.logger_setup()
+        self._heard = False
 
     def _is_timeout(self):
         self._awake = False
@@ -26,8 +27,13 @@ class STT(_Basic_class):
 
     @property
     def result(self):
+        self._heard = False
         return self._result
 
+    @property
+    def heard(self):
+        return self._heard
+    
     def _get_result(self, out_str):
         if self.name_calling:
             self._debug('Name calling is true')
@@ -44,8 +50,10 @@ class STT(_Basic_class):
                     self.t.start()
                     self._debug('Count down begin')
                     self._result = out_str
+                    self._heard = True
             elif self._awake:
                 self._result = out_str
+                self._heard = True
                 try:
                     self.t.cancel()
                     self._debug('Count down stop')
@@ -56,8 +64,10 @@ class STT(_Basic_class):
                     self._debug('Sleep')
             else:
                 self._result == ''
+                self._heard = False
         else:
             self._result = out_str
+            self._heard = True
             self._debug('Return %s' % out_str)
 
 

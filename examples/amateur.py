@@ -1,5 +1,5 @@
-import pismart
-from basic import _Basic_class
+import pismart.pismart as pismart
+from pismart.basic import _Basic_class 
 
 class PiSmart(_Basic_class):
     _class_name = 'Amateur PiSmart'
@@ -22,7 +22,7 @@ class PiSmart(_Basic_class):
         #self.STT_init()
 
     def ADC_init(self):
-        from adc import ADC
+        from pismart.adc import ADC 
         self._A0 = ADC(0)
         self._A1 = ADC(1)
         self._A2 = ADC(2)
@@ -35,7 +35,7 @@ class PiSmart(_Basic_class):
         self._A4.DEBUG = 'error'
 
     def Servo_init(self):
-        from servo import Servo
+        from pismart.servo import Servo
         self._servo0 = Servo(0)
         self._servo1 = Servo(1)
         self._servo2 = Servo(2)
@@ -55,7 +55,7 @@ class PiSmart(_Basic_class):
         self._servo7.DEBUG = 'error'
 
     def PWM_init(self):
-        from pwm import PWM
+        from pismart.pwm import PWM
         self._pwm0 = PWM(0)
         self._pwm1 = PWM(1)
         self._pwm2 = PWM(2)
@@ -75,12 +75,12 @@ class PiSmart(_Basic_class):
         self._pwm7.DEBUG = 'error'
 
     def LED_init(self):
-        from led import LED
+        from pismart.led import LED
         self._led = LED()
         self._led.DEBUG = 'error'
 
     def Motor_init(self):
-        from motor import Motor
+        from pismart.motor import Motor
         self._motor_a = Motor(Motor.MotorA)
         self._motor_b = Motor(Motor.MotorB)
         self._motor_a.DEBUG = 'error'
@@ -88,14 +88,14 @@ class PiSmart(_Basic_class):
         self.motor_switch(self.ON)
 
     def TTS_init(self):
-        from tts import TTS
+        from pismart.tts import TTS
         self._tts = TTS()
         self._tts.DEBUG = 'error'
         self.speaker_switch(self.ON)
         self.speaker_volume = 100
 
     def STT_init(self):
-        from stt import STT
+        from pismart.stt import STT
         self._stt = STT('dictionary', name_calling=True, timeout=10.0, dictionary_update=True)
         self._stt.DEBUG = 'error'
         self.listen = self._stt.recognize

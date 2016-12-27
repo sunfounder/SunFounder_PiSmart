@@ -14,7 +14,9 @@ from pismart.servo import Servo
 from pismart.pismart import PiSmart
 import time
 
-my_servo = Servo(0)
+#  You can give an int or a list to the channel argument.
+#  No channel argument mean all channels.
+my_servo = Servo(1)  
 my_servo.DEBUG = "debug"
 
 p = PiSmart()
@@ -27,7 +29,7 @@ def setup():
 	print "===================================================="
 	print "|                 Servo port test                  |"
 	print "|--------------------------------------------------|"
-	print "|          Servo connect to servo 0 port           |"
+	print "|          Servo connect to servo port             |"
 	print "|                                                  |"
 	print "|                    Servo work                    |"
 	print "|                                                  |"
