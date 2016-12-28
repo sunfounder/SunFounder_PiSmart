@@ -11,3 +11,4 @@ dist/*
 *.fsg
 *.jsgf
 *.wav
+*.egg-info
