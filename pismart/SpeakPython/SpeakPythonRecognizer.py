@@ -107,7 +107,7 @@ class SpeakPythonRecognizer:
 
 			#run grammar conversion using sphinx tools
 			jsgfPath = fsgPath[-3] + "jsgf";
-			cmd = "sphinx_jsgf2fsg -jsgf " + jsgfPath + " -fsg " + fsgPath;
+			cmd = "sphinx_jsgf2fsg -jsgf %s -fsg %s > /dev/null 2>&1" % (jsgfPath, fsgPath);
 			iret = os.system(cmd);
 		
 			#conversion checks	
@@ -166,6 +166,7 @@ class SpeakPythonRecognizer:
 		self.appName = appName;
 
 		#init speech recog pipeline
+		gst.debug_set_active(0)
 		self.pipeline = gst.parse_launch(' ! '.join(['alsasrc device=hw:1',
                                            'queue',
                                            'audioconvert',

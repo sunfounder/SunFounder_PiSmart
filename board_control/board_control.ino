@@ -16,7 +16,7 @@
 #define READ              1 			// READ  get value 
 #define WRITE             2 			// WRITE contral switch
 
-int powerType = 1;
+int powerType = 1;               // 0 = DC; 1 = 2S; 2 = 3S
 float alarm_gate[3] = {0, 7.4, 11.1};
 bool isLowPower = false;
 
@@ -26,7 +26,7 @@ bool isLowPower = false;
 #define CHANNEL3          0x16
 #define CHANNEL4          0x18
 #define POWERVOLTAGE      0x1a
-#define ISPOWEROFF 	      0x1C
+#define POWERTYPE         0X1d
 
 /* instructions that arduino will get */
 #define SERVO_POWER_OFF   0x20
@@ -69,7 +69,6 @@ bool isSent = false;
 
 Energy energy;
 
-
 int read_or_write = 0;   // read analog value or contral switch
 int channel = 0;
 
@@ -102,10 +101,10 @@ void loop() {
     }
     switch (read_or_write) {
       case READ:
-        if (channel < 0xC)
+        if (channel == POWERTYPE)
+          buf = powerType;
+        else if (channel < 0xC)
           buf = readAnalog(channel);
-        else
-          buf = sleepSignal;
         if (I2C_DEBUG) {
           Serial.print("buf = ");
           Serial.print("0x"); Serial.println(buf, HEX);
@@ -123,6 +122,9 @@ void loop() {
     if (DEBUG) {
       Serial.println("Waked up");
     }
+    pinMode(powerOffDetect, OUTPUT);
+    digitalWrite(powerOffDetect, LOW);
+
     rpiSwitchCtrl(RPIPOWERON);
     micSwitchCtrl(MICSWITCHON);
     statusLedCtrl(1);
@@ -147,10 +149,11 @@ void loop() {
 
   /* sleepSignal == 2 , go to sleep */
   if (sleepSignal == 2) {
-    if (isSent && channel == 0xC && buf == sleepSignal) {
-      sleepSignal = 0 ;       // signal clear
-      doSleep();
-    }
+    digitalWrite(powerOffDetect, 1);  // give poweroff signal to RPi board
+    delay(500);
+    pinMode(powerOffDetect, INPUT);
+    sleepSignal = 0 ;       // signal clear
+    doSleep();
   }
 
   if (checkBatterySignal) {
@@ -419,7 +422,7 @@ void doSleep() {
       if (DEBUG) Serial.println(" isRaised");
       poweroffDelayBegin = millis();
     }
-    if (digitalRead(powerOffDetect)) {
+    if (digitalRead(powerOffDetect)) {  // when RPi board poweroff, this pin will read HIGH
       if (DEBUG) Serial.println(" is 1");
       poweroffDelayEnd = millis();
     }
