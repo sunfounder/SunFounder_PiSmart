@@ -1,4 +1,5 @@
 from basic import _Basic_class
+from distutils.spawn import find_executable
 
 class TTS(_Basic_class):
 
@@ -9,13 +10,23 @@ class TTS(_Basic_class):
         self.engine = engine
         self._lang = "en-US"
         self.logger_setup()
+        self.words = "Hello, I'm Pi Smart"
 
     def _check_executable(self, executable):
         executable_path = find_executable(executable)
         found = executable_path is not None
         return found
 
+    @property
+    def say(self):
+        self.write(self.words)
+        return self.words
+    @say.setter
     def say(self, words):
+        self.write(words)
+        return self.words
+
+    def write(self, words):
         self._debug('Engine [%s], say:\n [%s]' % (self.engine, words)) 
         if self.engine == 'festival':
             if self._check_executable('festival'):

@@ -1,8 +1,11 @@
 import smbus
 import logging
+import time
+import commands
+import tempfile
+import subprocess
 
 class _Basic_class(object):
-
     _class_name = '_Basic_class'
     _DEBUG = 0
     DEBUG_LEVELS = {'debug': logging.DEBUG,
@@ -14,14 +17,16 @@ class _Basic_class(object):
     DEBUG_NAMES = ['critical', 'error', 'warning', 'info', 'debug']
 
     bus = smbus.SMBus(1)
+    SYS_ADDRESS = 0x10
 
     def __init__(self):
-        pass
+        self.logger_setup()
         
     def logger_setup(self):
         self.logger = logging.getLogger(self._class_name)
         self.ch = logging.StreamHandler()
-        self.formatter = logging.Formatter("%(asctime)s  pismart  class %s  %(levelname)s  %(message)s" % self._class_name)
+        form = "%(asctime)s  pismart." + self._class_name + "  [" + "%(levelname)s" + "]  " + "%(message)s"
+        self.formatter = logging.Formatter(form)
         self.ch.setFormatter(self.formatter)
         self.logger.addHandler(self.ch)
         self._debug    = self.logger.debug
@@ -44,7 +49,7 @@ class _Basic_class(object):
             raise ValueError('Debug value must be 0(critical), 1(error), 2(warning), 3(info) or 4(debug), not \"{0}\".'.format(debug))  
         self.logger.setLevel(self.DEBUG_LEVELS[self._DEBUG])
         self.ch.setLevel(self.DEBUG_LEVELS[self._DEBUG])
-        self._debug('Set debug %s' % debug)
+        self._debug('Set logging level to [%s]' % self._DEBUG)
 
     def run_command(self, cmd):
         self._debug('Run command: "%s"' % cmd)
@@ -54,6 +59,29 @@ class _Basic_class(object):
             output = f.read()
             return output
 
-    @staticmethod
-    def _map(x, in_min, in_max, out_min, out_max):
+    def _map(self, x, in_min, in_max, out_min, out_max):
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+    def _write_sys_byte(self, value):
+        self._info('Write to "0x%02X" at "0x%02X"' % (self.SYS_ADDRESS, value))
+        self._debug('Write "0x%02X" to "0x%02X"' % (value, self.SYS_ADDRESS))
+        self.bus.write_byte(self.SYS_ADDRESS, value)
+        self._debug("Done")
+
+    def _read_sys_byte(self, reg, delay=0):
+        self._info('Read from "0x%02X" at "0x%02X"' % (self.SYS_ADDRESS, reg))
+        self._debug('Write "0x%02X" to "0x%02X"' % (reg, self.SYS_ADDRESS))
+        self.bus.write_byte(self.SYS_ADDRESS, reg)
+        self._debug("Done")
+        if delay != 0:
+            time.sleep(delay)
+
+        self._debug('Read from "0x%02X"' % (self.SYS_ADDRESS))
+        number = self.bus.read_byte(self.SYS_ADDRESS)
+        self._debug('Done, read value: "0x%02X"' % number)
+        if delay != 0:
+            time.sleep(delay)
+        return number
+
+    def end(self):
+        pass        

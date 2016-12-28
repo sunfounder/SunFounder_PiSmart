@@ -1,4 +1,4 @@
-[ hi | hey | hello ] [ pi robot ];
+[ hi | hey | hello ] [ pi smart ];
 @results
 	0 {'__NAME__'}
 @

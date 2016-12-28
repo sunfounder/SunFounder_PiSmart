@@ -10,21 +10,21 @@
 *               Cavon    2016-08-23 Update set debug
 **********************************************************************
 '''
-from pismart import LED
+from pismart.led import LED
 import time
 
-blue_leds = LED(LED.BLUE)
-blue_leds.DEBUG = True
+leds = LED()
+leds.DEBUG = 'debug'
 
-red_leds  = LED(LED.RED)
-red_leds.DEBUG = True
+LED_MAX = 100
+LED_MIN = 10
 
 def setup():
 	print "|=====================================================|"
 	print "|                   LED Ring test                     |"
 	print "|-----------------------------------------------------|"
 	print "|                                                     |"
-	print "|         Breath Blue leds breath and then Red leds   |"
+	print "|              Breath Blue leds breath                |"
 	print "|                                                     |"
 	print "|                                           SunFounder|"
 	print "|=====================================================|"
@@ -32,27 +32,15 @@ def setup():
 
 def main():
 	while True:
-		for x in xrange(1,3):
-			for x in xrange(10, 60, 2):
-				blue_leds.brightness = x
-				time.sleep(0.03)
-			for x in xrange(60,10, -1):
-				blue_leds.brightness = x
-				time.sleep(0.05)
-		blue_leds.off()
-
-		for x in xrange(1,3):
-			for x in xrange(10, 60, 2):
-				red_leds.brightness = x
-				time.sleep(0.03)
-			for x in xrange(60,10, -1):
-				red_leds.brightness = x
-				time.sleep(0.05)
-		red_leds.off()
+		for x in xrange(LED_MIN, LED_MAX, 1):
+			leds.brightness = x
+			time.sleep(0.01)
+		for x in xrange(LED_MAX, LED_MIN, -1):
+			leds.brightness = x
+			time.sleep(0.015)
 
 def destroy():
-	red_leds.off()
-	blue_leds.off()
+	leds.off()
 
 if __name__ == '__main__':
 	try:

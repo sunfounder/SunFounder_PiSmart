@@ -3,33 +3,50 @@ from pwm import PWM
 
 class LED(PWM):
 
-    RED         = 9
-    BLUE        = 8
+    Led1        = 9
+    Led2        = 8
     BRIGHT      = 75
     RUNING      = 30
     DIMING      = 5
     OFF         = 0
     
-    LED_COLOR = {'red':9, 'blue':8}
+    LED_PIN = {'led1':9, 'led2':8}
+    LED_GRP = {9:'LED.LED1', 8:'LED.LED2'}
 
     BRIGHT_X = 100          #how long it will be bright 
     SLEEP_TIME  = 0.02
 
     _class_name = 'LED'
 
-    def __init__(self, channel):
-        if isinstance(channel, str):
-            if channel.lower() in self.LED_COLOR:
-                channel = self.LED_COLOR.get(channel.lower())
-        if channel not in (8, 9):
-            raise ValueError ('Led channel should be "RED"(9) or "BLUE"(8), not \"{0}\".'.format(channel))
-        self.channel = channel
+    def __init__(self, channel=None):
         self.logger_setup()
-        self._debug('Init LED channel [%d] complate. (8 = BLUE, 9 = RED)' % self.channel)
+        self.channel = channel
+        self.brightness = 0
+
+    @property
+    def channel(self):
+        return self._channel
+
+    @channel.setter
+    def channel(self, channel):
+        if channel == None:
+            channel = [8, 9]
+            self.is_channel_list = True
+        elif isinstance(channel, str):
+            if channel.lower() in self.LED_PIN:
+                channel = self.LED_PIN.get(channel.lower())
+                self.is_channel_list = False
+        elif channel in (8, 9):
+            self.is_channel_list = False
+        else:    
+            self.warning('Led channel "%s" is not the ring. The ring should be "led1"(9) or "led2"(8), '%channel)
+        self._channel = channel
+        self._debug("Channel set to [%s]" % self._channel)
 
     def _get_pwm_from_brightness(self, brightness):
-        pwm_value = _map(brightness, 0, 100, 0, 4095)
+        pwm_value = self._map(brightness, 0, 100, 0, 4095)
         return int(pwm_value)
+    
     @property
     def brightness(self):
         return self._brightness
@@ -41,9 +58,12 @@ class LED(PWM):
         self._brightness = value
         pwm_value = self._get_pwm_from_brightness(self._brightness)
         self.set_PWM(pwm_value)
-        self._debug('Set LED [%d] to [%d].' % (self.channel, self._brightness))
+        self._debug('Set LED to [%s].' % (self._brightness))
+
+    def write(self, value):
+        self.brightness = value
 
     def off(self):
         pwm_value = self._get_pwm_from_brightness(self.OFF)
         self.set_PWM(self.OFF)
-        self._debug('Set LED [%d] OFF.' % self.channel)
+        self._debug('Set LED OFF.')

@@ -39,7 +39,7 @@ class SpeakPythonRecognizer:
 
 	callback = None;
 
-	DEBUG_VAL = 3;
+	DEBUG_VAL = 20;
 
 	#partial result from recog thread
 	def asr_partial_result(self, asr, text, uttid):
