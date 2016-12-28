@@ -8,6 +8,7 @@ import commands
 import tempfile
 import subprocess
 import sys
+import pismart
 from distutils.spawn import find_executable
 
 
@@ -29,8 +30,15 @@ def _read_file(filename):
     fp.close()
     return value
 
+def _test_mode():
+    import test
+    try:
+        test.main()
+    except KeyboardInterrupt:
+        test.pismart.end()
+
 def main_setup():
-    global usage_dic
+    global usage_dic, p
     usage_dic = {
         'basic'          :'',
         'speaker_volume' :'',
@@ -40,6 +48,7 @@ def main_setup():
         'speaker_switch' :'',
         'power_type'     :'',
         'get'            :'',
+        'test'           :'',
         'all'            :'',
     }
     usage_dic['basic']          = \
@@ -52,7 +61,8 @@ def main_setup():
         + '    servo_switch      Switch for servo\n' \
         + '    speaker_switch    Switch for speaker\n' \
         + '    power_type        Change power type for alarm\n' \
-        + '    get               Get informations you want\n'
+        + '    get               Get informations you want\n' \
+        + '    test              Run test mode\n'
     usage_dic['speaker_volume'] = \
           'Usage:\n' \
         + '  pismart speaker_volume [volume]\n\n' \
@@ -103,6 +113,11 @@ def main_setup():
         + '  voltage      Get power voltage\n' \
         + 'Example:\n' \
         + '  pismart get voltage  # Get current power voltage\n'
+    usage_dic['test']            = \
+          'Usage:\n'\
+        + '  pismart test mode # Run test mode\n\n' \
+        + 'Example:\n' \
+        + '  pismart test mode # Run test mode\n'
     usage_dic['all']            = \
           usage_dic['basic'] \
         + usage_dic['speaker_volume'] \
@@ -111,8 +126,9 @@ def main_setup():
         + usage_dic['servo_switch'] \
         + usage_dic['speaker_switch'] \
         + usage_dic['power_type'] \
-        + usage_dic['get']
-    p = PiSmart() 
+        + usage_dic['get'] \
+        + usage_dic['test']
+    p = pismart.PiSmart() 
 
 def usage(opt = 'basic'):
     print usage_dic[opt]
@@ -131,7 +147,7 @@ def check_command():
         control = None
     else:
         control = sys.argv[2]
-    return option
+    return option, control
 
 def on_off_handle(on_off):
     if isinstant(on_off, str):
@@ -151,7 +167,7 @@ def on_off_handle(on_off):
 
 def main():
     main_setup()
-    option = check_command()
+    option, control = check_command()
 
     if option in ['help', 'h']:
         if option == None:
@@ -165,47 +181,56 @@ def main():
         try:
             control = int(control)
         except:
-            usage(speaker_volume)
+            usage("speaker_volume")
         if control not in range(0, 101):
-            usage(speaker_volume)
+            usage("speaker_volume")
         p.volume = control
     elif option == 'capture_volume':
         try:
             control = int(control)
         except:
-            usage(capture_volume)
+            usage("capture_volume")
         if control not in range(0, 101):
-            usage(capture_volume)
+            usage("capture_volume")
         p.capture_volume = control
     elif option == 'motor_switch':
         control = on_off_handle(contorl)
         if control not in [0, 1]:
-            usage(motor_switch)
+            usage("motor_switch")
         p.motor_switch(control)
     elif option == 'speaker_switch':
         control = on_off_handle(contorl)
         if control not in [0, 1]:
-            usage(speaker_switch)
+            usage("speaker_switch")
         p.speaker_switch(control)
     elif option == 'servo_switch':
         control = on_off_handle(contorl)
         if control not in [0, 1]:
-            usage(servo_switch)
+            usage("servo_switch")
         p.servo_switch(control)
     elif option == 'pwm_switch':
         control = on_off_handle(contorl)
         if control not in [0, 1]:
-            usage(pwm_switch)
+            usage("pwm_switch")
         p.pwm_switch(control)
     elif option == 'power_type':
+        try:
+            control = int(control)
+        except:
+            usage("capture_volume")
         if control not in ['2S', '3S', 'DC']:
-            usage(power_type)
+            usage("power_type")
         p.power_type = control
     elif option == 'get':
         if control == 'voltage':
-            print "Power voltage now is:", p.read_battery()
+            print "Power voltage now is: %sV"%p.power_voltage
         else:
-            usage(get)
+            usage("get")
+    elif option == 'test':
+        if control == 'mode':
+            _test_mode()
+        else:
+            usage("test")
     else:
         print 'Option Error'
         usage()
