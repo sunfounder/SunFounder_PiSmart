@@ -77,26 +77,34 @@ def main_setup():
         + '  pismart capture_volume 100  # Set capture volume to 100%\n'
     usage_dic['motor_switch']   = \
           'Usage:\n' \
-        + '  pismart motor_switch [on/off]\n\n' \
-        + 'on/off:      Turn the motor switch on/off with 1/0\n\n' \
+        + '  pismart motor_switch [status]\n\n' \
+        + 'status: \n' \
+        + '  on/1     Turn the motor switch on\n\n' \
+        + '  off/0    Turn the motor switch off\n\n' \
         + 'Example:\n' \
         + '  pismart motor_switch 1  # Turn the motor switch on\n'
     usage_dic['servo_switch']   = \
           'Usage:\n' \
-        + '  pismart servo_switch [on/off]\n\n' \
-        + 'on/off:      Turn the servo switch on/off with 1/0\n\n' \
+        + '  pismart servo_switch [status]\n\n' \
+        + 'status: \n' \
+        + '  on/1     Turn the servo switch on\n\n' \
+        + '  off/0    Turn the servo switch off\n\n' \
         + 'Example:\n' \
         + '  pismart servo_switch 1  # Turn the servo switch on\n'
     usage_dic['pwm_switch']   = \
           'Usage:\n' \
-        + '  pismart pwm_switch [on/off]\n\n' \
-        + 'on/off:      Turn the pwm switch on/off with 1/0\n\n' \
+        + '  pismart pwm_switch [status]\n\n' \
+        + 'status: \n' \
+        + '  on/1     Turn the pwm switch on\n\n' \
+        + '  off/0    Turn the pwm switch off\n\n' \
         + 'Example:\n' \
         + '  pismart pwm_switch 1  # Turn the pwm switch on\n'
     usage_dic['speaker_switch'] = \
           'Usage:\n' \
-        + '  pismart speaker_switch [on/off]\n\n' \
-        + 'on/off:      Turn the speaker switch on/off with 1/0\n\n' \
+        + '  pismart speaker_switch [status]\n\n' \
+        + 'status: \n' \
+        + '  on/1     Turn the speaker switch on\n\n' \
+        + '  off/0    Turn the speaker switch off\n\n' \
         + 'Example:\n' \
         + '  pismart speaker_switch 1  # Turn the speaker switch on\n'
     usage_dic['power_type']     = \
@@ -110,14 +118,20 @@ def main_setup():
         + '  pismart get [info]\n\n' \
         + 'info:      Specified an information.\n\n' \
         + 'Avalible informations: \n' \
-        + '  voltage      Get power voltage\n' \
+        + '  voltage       Get power voltage\n' \
+        + '  power_type    Get power type\n' \
+        + '  cpu_usage     Get cpu usage  \n' \
+        + '  cpu_temp      Get cpu temperature \n' \
+        + '  gpu_temp      Get gpu temperature \n' \
+        + '  ram_info      Get ram infomation  \n' \
+        + '  disk_info     Get disk infomation  \n' \
         + 'Example:\n' \
         + '  pismart get voltage  # Get current power voltage\n'
     usage_dic['test']            = \
           'Usage:\n'\
-        + '  pismart test mode # Run test mode\n\n' \
+        + '  pismart test  # Run test mode\n\n' \
         + 'Example:\n' \
-        + '  pismart test mode # Run test mode\n'
+        + '  pismart test  # Run test mode\n'
     usage_dic['all']            = \
           usage_dic['basic'] \
         + usage_dic['speaker_volume'] \
@@ -128,7 +142,8 @@ def main_setup():
         + usage_dic['power_type'] \
         + usage_dic['get'] \
         + usage_dic['test']
-    p = pismart.PiSmart() 
+    p = pismart.PiSmart()
+    p.DEBUG = 'error'
 
 def usage(opt = 'basic'):
     print usage_dic[opt]
@@ -150,34 +165,30 @@ def check_command():
     return option, control
 
 def on_off_handle(on_off):
-    if isinstant(on_off, str):
-        on_off=on_off.lower()
-        if on_off == 'on':
-            on_off = 1
-        elif on_off == 'off':
-            on_off = 0
-        else:
-            return false
+    if on_off in ['1', 'on', 'On', 'ON']:
+        on_off = 1
+    elif on_off in ['0', 'off', 'Off', 'OFF']:
+        on_off = 0
     else:
-        try:
-            on_off = int(control)
-        except:
-            return false
+        return -1
     return on_off
+
+def print_bar(value, total, unit):
+    percentage = round(value *100.0 / total, 1)
+    a = ' %s%%    %s%s/%s%s' %(percentage, value, unit, total, unit)
+    b = ''
+    count = int(round(percentage/10))
+    for i in range(count):
+        b += "="
+    for i in range(10-count):
+        b += " "
+    print ' [%s] %s' %(b, a)
 
 def main():
     main_setup()
     option, control = check_command()
 
-    if option in ['help', 'h']:
-        if option == None:
-            usage()
-        else:
-            if control in usage_dic:
-                usage(control)
-            else:
-                usage()
-    elif option == 'speaker_volume':
+    if option == 'speaker_volume':
         try:
             control = int(control)
         except:
@@ -185,6 +196,7 @@ def main():
         if control not in range(0, 101):
             usage("speaker_volume")
         p.volume = control
+        print "Set speaker volume %s, Done"%control
     elif option == 'capture_volume':
         try:
             control = int(control)
@@ -193,45 +205,56 @@ def main():
         if control not in range(0, 101):
             usage("capture_volume")
         p.capture_volume = control
+        print "Set capture volume %s, Done"%control
     elif option == 'motor_switch':
-        control = on_off_handle(contorl)
+        control = on_off_handle(control)
         if control not in [0, 1]:
             usage("motor_switch")
         p.motor_switch(control)
+        print "Set motor switch %s, Done"%control
     elif option == 'speaker_switch':
-        control = on_off_handle(contorl)
+        control = on_off_handle(control)
         if control not in [0, 1]:
             usage("speaker_switch")
         p.speaker_switch(control)
+        print "Set speaker switch %s, Done"%control
     elif option == 'servo_switch':
-        control = on_off_handle(contorl)
+        control = on_off_handle(control)
         if control not in [0, 1]:
             usage("servo_switch")
         p.servo_switch(control)
+        print "Set servo switch %s, Done"%control
     elif option == 'pwm_switch':
-        control = on_off_handle(contorl)
+        control = on_off_handle(control)
         if control not in [0, 1]:
             usage("pwm_switch")
         p.pwm_switch(control)
+        print "Set pwm switch %s, Done"%control
     elif option == 'power_type':
-        try:
-            control = int(control)
-        except:
-            usage("capture_volume")
         if control not in ['2S', '3S', 'DC']:
             usage("power_type")
         p.power_type = control
+        print "Set power type %s, Done"%control
     elif option == 'get':
         if control == 'voltage':
-            print "Power voltage now is: %sV"%p.power_voltage
+            print "Current power voltage is: %sV"%p.power_voltage
+        elif control == 'power_type':
+            print "Current power type is: %s"%p.power_type
+        elif control == 'cpu_usage':
+            print "Current cpu usage is: %s%%"%p.cpu_usage
+        elif control == 'cpu_temp':
+            print "Current cpu temperature is: %s`C"%p.cpu_temperature
+        elif control == 'gpu_temp':
+            print "Current gpu temperature is: %s`C"%p.gpu_temperature
+        elif control == 'ram_info':
+            print "Current ram information:"
+            print_bar(p.ram_used, p.ram_total, 'M')
+        elif control == 'disk_info':
+            print "Current disk information:"
+            print_bar(p.disk_used, p.disk_total, 'G')
         else:
             usage("get")
     elif option == 'test':
-        if control == 'mode':
-            _test_mode()
-        else:
-            usage("test")
+        _test_mode()
     else:
-        print 'Option Error'
-        usage()
-        
+        usage() 

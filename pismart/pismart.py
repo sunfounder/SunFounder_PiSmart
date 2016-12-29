@@ -1,6 +1,9 @@
 from basic import _Basic_class
 from adc import ADC
 import math
+from time import sleep
+import os
+import commands
 
 class PiSmart(_Basic_class):
     _class_name = 'PiSmart'
@@ -18,13 +21,14 @@ class PiSmart(_Basic_class):
     SET_POWER_2S        = 0X27  # power_type = 1, Li-po battery 2s
     SET_POWER_3S        = 0X28  # power_type = 2, Li-po battery 3s
 
+    POWER_TYPE          = 0X1d  # send this number to ask arduino return power-type
 
     def __init__(self):
         self.logger_setup()
         self.speaker_volume = 70
         self.capture_volume = 100
-        self.power_type = '2S'
-        self.power_type = self._power_type
+        tmp = self.power_type
+        sleep(0.01)         # when arduino open debug, sleep(> 0.3)
         self.adc = ADC(5)
         self._debug('Init PiSmart object complete')
 
@@ -63,6 +67,8 @@ class PiSmart(_Basic_class):
 
     @property
     def power_type(self):
+        self._power_type = self._read_sys_byte(self.POWER_TYPE)
+        self._debug('Get power type from bottom board')
         return self._power_type
     
     @power_type.setter
@@ -139,7 +145,7 @@ class PiSmart(_Basic_class):
 
     @property
     def cpu_temperature(self):
-        raw_cpu_temperature = _read_file("/sys/class/thermal/thermal_zone0/temp")
+        raw_cpu_temperature = commands.getoutput("cat /sys/class/thermal/thermal_zone0/temp")
         cpu_temperature = float(raw_cpu_temperature)/1000
         #cpu_temperature = 'Cpu temperature : ' + str(cpu_temperature)
         return cpu_temperature
@@ -163,14 +169,12 @@ class PiSmart(_Basic_class):
 
     @property
     def ram_total(self):
-        ram_status = _get_ram_info()
-        ram_total = 'Ram total : %s' % round(int(ram_status[0]) / 1000,1)
+        ram_total = round(int(self.ram_info[0]) / 1000,1)
         return ram_total
 
     @property
     def ram_used(self):
-        ram_status = _get_ram_info()
-        ram_used = 'Ram used : %s' % round(int(ram_status[1]) / 1000,1)
+        ram_used = round(int(self.ram_info[1]) / 1000,1)
         return ram_used
 
     @property
@@ -185,14 +189,12 @@ class PiSmart(_Basic_class):
 
     @property
     def disk_total(self):
-        disk_status = _get_disk_space()
-        disk_total = 'Disk total : %s' % disk_status[0][:-1]
+        disk_total = float(self.disk_space[0][:-1])
         return disk_total
 
     @property
     def disk_used(self):
-        disk_status = _get_disk_space()
-        disk_used = 'Disk used : %s' % disk_status[1][:-1]
+        disk_used = float(self.disk_space[1][:-1])
         return disk_used
 
     @property                    

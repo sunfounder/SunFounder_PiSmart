@@ -44,14 +44,14 @@ class TTS(_Basic_class):
                 self._debug('Festival is busy. Pass')
         if self.engine == 'pico':
             if self._check_executable('pico2wave') and self._check_executable('aplay'):
-                cmd = 'pico2wave -l %s -w pico.wav "%s" && aplay pico.wav' % (self._lang, words)
+                cmd = 'pico2wave -l %s -w /tmp/pico.wav "%s" && aplay /tmp/pico.wav' % (self._lang, words)
                 self.run_command(cmd)
                 self._debug('command: %s' %cmd)
             else:
                 self._debug('Festival is busy. Pass')
 
     def end(self):
-        self.run_command("rm -f pico.wav")
+        pass
 
     @property
     def lang(self):

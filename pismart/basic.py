@@ -25,7 +25,7 @@ class _Basic_class(object):
     def logger_setup(self):
         self.logger = logging.getLogger(self._class_name)
         self.ch = logging.StreamHandler()
-        form = "%(asctime)s  pismart." + self._class_name + "  [" + "%(levelname)s" + "]  " + "%(message)s"
+        form = "%(asctime)s	[%(levelname)s]	%(message)s"
         self.formatter = logging.Formatter(form)
         self.ch.setFormatter(self.formatter)
         self.logger.addHandler(self.ch)
@@ -63,25 +63,25 @@ class _Basic_class(object):
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
     def _write_sys_byte(self, value):
-        self._info('Write to "0x%02X" at "0x%02X"' % (self.SYS_ADDRESS, value))
-        self._debug('Write "0x%02X" to "0x%02X"' % (value, self.SYS_ADDRESS))
+        self._info('Write "0x%02X" to I2C_dev(0x%02X)' % (value, self.SYS_ADDRESS))
+        self._debug('└─Write "0x%02X" to I2C_dev(0x%02X) start' % (value, self.SYS_ADDRESS))
         self.bus.write_byte(self.SYS_ADDRESS, value)
-        self._debug("Done")
+        self._debug("└─Done")
 
     def _read_sys_byte(self, reg, delay=0):
-        self._info('Read from "0x%02X" at "0x%02X"' % (self.SYS_ADDRESS, reg))
-        self._debug('Write "0x%02X" to "0x%02X"' % (reg, self.SYS_ADDRESS))
+        self._info('Read from I2C_dev(0x%02X) at "0x%02X"' % (self.SYS_ADDRESS, reg))
+        self._debug('└─Write "0x%02X" to I2C_dev(0x%02X)' % (reg, self.SYS_ADDRESS))
         self.bus.write_byte(self.SYS_ADDRESS, reg)
-        self._debug("Done")
+        self._debug("└─Done")
         if delay != 0:
             time.sleep(delay)
 
-        self._debug('Read from "0x%02X"' % (self.SYS_ADDRESS))
+        self._debug('└─Read from I2C_dev(0x%02X)' % (self.SYS_ADDRESS))
         number = self.bus.read_byte(self.SYS_ADDRESS)
-        self._debug('Done, read value: "0x%02X"' % number)
+        self._debug('└─Done, read value: "0x%02X"' % number)
         if delay != 0:
             time.sleep(delay)
         return number
-
+        
     def end(self):
         pass        
