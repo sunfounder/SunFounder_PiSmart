@@ -101,16 +101,28 @@ void loop() {
     }
     switch (read_or_write) {
       case READ:
-        if (channel == POWERTYPE)
-          buf = powerType;
-        else if (channel < 0xC)
-          buf = readAnalog(channel);
         if (I2C_DEBUG) {
-          Serial.print("buf = ");
-          Serial.print("0x"); Serial.println(buf, HEX);
+          Serial.println("\n++++ Respberry request to read ++++\n");
+        }
+        if (channel == (POWERTYPE & 0x0F)){
+          buf = powerType;
+          if (I2C_DEBUG){
+            Serial.print("buf = powerType = ");
+            Serial.print("0x"); Serial.println(powerType);
+          }
+        }
+        else if (channel < 0xC){
+          buf = readAnalog(channel);
+          if (I2C_DEBUG) {
+            Serial.print("buf = readAnalog() = ");
+            Serial.print("0x"); Serial.println(buf, HEX);
+          }
         }
         break;
       case WRITE:
+        if (I2C_DEBUG) {
+            Serial.println("\n++++ Respberry request to write ++++\n");
+          }
         writeSwitch(number);
         break;
     }
