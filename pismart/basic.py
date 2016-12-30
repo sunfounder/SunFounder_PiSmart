@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import smbus
 import logging
 import time
