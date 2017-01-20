@@ -1,8 +1,8 @@
 from pismart.led import LED
 import time
 
-blue_leds = LED(LED.LED1)
-red_leds  = LED(LED.LED2)
+blue_leds = LED(8)
+red_leds  = LED(9)
 
 LED_MAX = 100 
 LED_MIN = 10

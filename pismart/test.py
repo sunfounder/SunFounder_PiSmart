@@ -177,7 +177,7 @@ def stt():
     pismart.STT_init()
     try:
         while True:
-            pismart.listen()
+            pismart.listen
             if pismart.heard:
                 print "I heard that: %s" % pismart.result
     except KeyboardInterrupt:

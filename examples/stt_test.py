@@ -15,7 +15,7 @@ from pismart.stt import STT
 from pismart.tts import TTS
 
 p = PiSmart()
-sr = STT('dictionary', name_calling=True, timeout=10.0, dictionary_update=False)
+sr = STT('dictionary', name_calling=True, timeout=10.0, dictionary_update=True)
 sr.DEBUG = False
 p.speaker_switch(1)
 

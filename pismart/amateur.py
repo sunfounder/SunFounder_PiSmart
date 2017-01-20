@@ -19,7 +19,7 @@ class PiSmart(_Basic_class):
         self.LED_init()
         self.Motor_init()
         self.TTS_init()
-        #self.STT_init()
+        self.STT_init()
 
     def ADC_init(self):
         from adc import ADC
@@ -96,12 +96,8 @@ class PiSmart(_Basic_class):
 
     def STT_init(self):
         from stt import STT
-        self._stt = STT('dictionary', name_calling=True, timeout=10.0, dictionary_update=True)
+        self._stt = STT('dictionary', name_calling=False, timeout=10.0, dictionary_update=True)
         self._stt.DEBUG = 'error'
-        self.listen = self._stt.recognize
-        self.heard  = self._stt.heard
-        self.result = self._stt.result
-
 
     def ADC_end(self):
         pass
@@ -305,3 +301,17 @@ class PiSmart(_Basic_class):
     @Say.setter
     def Say(self, words):
         self._tts.say = words
+
+    @property
+    def listen(self):
+        return self._stt.recognize()
+
+    @property
+    def heard(self):
+        return self._stt.heard
+
+    @property
+    def result(self):
+        return self._stt.result
+    
+    
