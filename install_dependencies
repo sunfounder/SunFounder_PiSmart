@@ -1,4 +1,4 @@
-#!/usr/bash
+#!/bin/bash
 #Installation
 
 ##Tested on:
@@ -15,7 +15,6 @@ if [ "$(whoami)" != "root" ] ; then
 fi
 
 sudo apt-get update
-sudo apt-get upgrade -y
 
 ###################################
 # install espeak festival pico runtime #
@@ -189,8 +188,12 @@ sudo apt-get upgrade -y
 	echo 'Copying files...'
 	cd /home/pi/SunFounder_PiSmart
     sudo cp ./bin/* /usr/local/bin
-    sudo cp ./data/* /usr/local/bin
+    sudo cp -r ./data/* /usr/local/bin
 	sudo cp /usr/local/lib/libsphinxbase.so.3 /usr/lib
 	echo 'done'
+
+# Install PiSmart:
+    echo 'Install PiSmart'
+    sudo python setup.py install
 
 	echo 'all done, enjoy it'

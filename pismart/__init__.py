@@ -11,9 +11,7 @@ import sys
 import pismart
 from distutils.spawn import find_executable
 
-
 DIGITAL_CHANNEL = [17, 18, 27, 22, 23, 24, 25, 4]   # wiringPi pin 0~7 -> BCM GPIO
-
 
 def _write_data(reg, value):
     self.bus.write_byte_data(PWM_ADDRESS, reg, value)
@@ -62,7 +60,8 @@ def main_setup():
         + '    speaker_switch    Switch for speaker\n' \
         + '    power_type        Change power type for alarm\n' \
         + '    get               Get informations you want\n' \
-        + '    test              Run test mode\n'
+        + '    test              Run test mode\n' \
+        + '    start_project     Start an amateur project\n'
     usage_dic['speaker_volume'] = \
           'Usage:\n' \
         + '  pismart speaker_volume [volume]\n\n' \
@@ -75,7 +74,7 @@ def main_setup():
         + 'volume:      Specified a volume in [0, 100]\n\n' \
         + 'Example:\n' \
         + '  pismart capture_volume 100  # Set capture volume to 100%\n'
-    usage_dic['motor_switch']   = \
+    usage_dic['motor_switch'] = \
           'Usage:\n' \
         + '  pismart motor_switch [status]\n\n' \
         + 'status: \n' \
@@ -83,7 +82,7 @@ def main_setup():
         + '  off/0    Turn the motor switch off\n\n' \
         + 'Example:\n' \
         + '  pismart motor_switch 1  # Turn the motor switch on\n'
-    usage_dic['servo_switch']   = \
+    usage_dic['servo_switch'] = \
           'Usage:\n' \
         + '  pismart servo_switch [status]\n\n' \
         + 'status: \n' \
@@ -91,7 +90,7 @@ def main_setup():
         + '  off/0    Turn the servo switch off\n\n' \
         + 'Example:\n' \
         + '  pismart servo_switch 1  # Turn the servo switch on\n'
-    usage_dic['pwm_switch']   = \
+    usage_dic['pwm_switch'] = \
           'Usage:\n' \
         + '  pismart pwm_switch [status]\n\n' \
         + 'status: \n' \
@@ -107,13 +106,13 @@ def main_setup():
         + '  off/0    Turn the speaker switch off\n\n' \
         + 'Example:\n' \
         + '  pismart speaker_switch 1  # Turn the speaker switch on\n'
-    usage_dic['power_type']     = \
+    usage_dic['power_type'] = \
           'Usage:\n' \
         + '  pismart power_type [type]\n\n' \
         + 'type:      Specified a power type in 2S/3S/DC, indicate 2S/3S Li-po battery or DC power\n\n' \
         + 'Example:\n' \
         + '  pismart power_type 2S  # Specified the power type as 2S\n'
-    usage_dic['get']            = \
+    usage_dic['get'] = \
           'Usage:\n' \
         + '  pismart get [info]\n\n' \
         + 'info:      Specified an information.\n\n' \
@@ -127,12 +126,17 @@ def main_setup():
         + '  disk_info     Get disk infomation  \n' \
         + 'Example:\n' \
         + '  pismart get voltage  # Get current power voltage\n'
-    usage_dic['test']            = \
+    usage_dic['test'] = \
           'Usage:\n'\
         + '  pismart test  # Run test mode\n\n' \
         + 'Example:\n' \
         + '  pismart test  # Run test mode\n'
-    usage_dic['all']            = \
+    usage_dic['start_project'] = \
+          'Usage:\n'\
+        + '  pismart start_project [project name] # Run test mode\n\n' \
+        + 'Example:\n' \
+        + '  pismart start_project my_project     # Run test mode\n'
+    usage_dic['all'] = \
           usage_dic['basic'] \
         + usage_dic['speaker_volume'] \
         + usage_dic['capture_volume'] \
@@ -141,7 +145,8 @@ def main_setup():
         + usage_dic['speaker_switch'] \
         + usage_dic['power_type'] \
         + usage_dic['get'] \
-        + usage_dic['test']
+        + usage_dic['test'] \
+        + usage_dic['start_project']
     p = pismart.PiSmart()
     p.DEBUG = 'error'
 
@@ -183,6 +188,27 @@ def print_bar(value, total, unit):
     for i in range(10-count):
         b += " "
     print ' [%s] %s' %(b, a)
+
+def start_project(project_name):
+    sample = 'sample'
+    cmd = 'mkdir %s' % project_name
+    code_dir = '%s/%s.py' % (project_name, project_name)
+    commands.getoutput(cmd)
+    cmd = 'cp /usr/local/bin/%s/* %s/' % (sample, project_name)
+    commands.getoutput(cmd)
+    cmd = 'mv %s/%s.py %s' % (project_name, sample, code_dir)
+    commands.getoutput(cmd)
+    code = open(code_dir, 'r')
+    lines = code.readlines()
+    new_lines = []
+    for line in lines:
+        if sample in line:
+            line = line.replace(sample,project_name)
+        new_lines.append(line)
+    code.close()
+    code = open(code_dir, 'w')
+    code.writelines(new_lines)
+    code.close()
 
 def main():
     main_setup()
@@ -256,5 +282,10 @@ def main():
             usage("get")
     elif option == 'test':
         _test_mode()
+    elif option == 'start_project':
+        if control != None:
+            start_project(control)
+        else:
+            usage(option)
     else:
         usage() 
