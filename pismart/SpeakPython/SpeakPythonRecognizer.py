@@ -23,6 +23,7 @@ gobject.threads_init();
 import gst;
 import os.path;
 import sys;
+import os
 
 from SpeakPython import SpeakPython;
 
@@ -166,7 +167,10 @@ class SpeakPythonRecognizer:
 		self.appName = appName;
 
 		#init speech recog pipeline
-		gst.debug_set_active(0)
+		gst.debug_set_active(True)
+		print "================="
+		print "start STT init"
+		print "================="
 		self.pipeline = gst.parse_launch(' ! '.join(['alsasrc device=hw:1',
                                            'queue',
                                            'audioconvert',
@@ -201,3 +205,7 @@ class SpeakPythonRecognizer:
 		self.bus = self.pipeline.get_bus();
 		self.bus.add_signal_watch();
 		self.bus.connect("message::application", self.app_msg);
+
+		print "================="
+		print "finish STT init"
+		print "================="

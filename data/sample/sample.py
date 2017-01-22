@@ -6,7 +6,7 @@ def setup():
     sample = PiSmart()
     # If one of the motor is reversed, change its False to True
     sample.MotorA_reversed = False
-    sample.MotorA_reversed = False
+    sample.MotorB_reversed = False
 
 def end():
     sample.end()
