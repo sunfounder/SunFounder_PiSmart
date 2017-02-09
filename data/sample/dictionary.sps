@@ -3,27 +3,17 @@
     0 {'forward'}
 @
 
-[ turn left ];
+[ left ];
 @results
 	0 {'left'}
 @
 
-[ turn right ];
+[ right ];
 @results
 	0 {'right'}
 @
 
-[ turn back ];
+[ backward ];
 @results
-	0 {'back'}
-@
-
-[ yes|yep ];
-@results
-	0 {'yes'}
-@
-
-[ no|nope ];
-@results
-	0 {'no'}
+	0 {'backward'}
 @

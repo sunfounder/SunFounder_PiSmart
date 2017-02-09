@@ -7,7 +7,7 @@ import commands
 
 class PiSmart(_Basic_class):
     _class_name = 'PiSmart'
-    
+
     ON  = 1
     OFF = 0
 
@@ -29,7 +29,7 @@ class PiSmart(_Basic_class):
         self.capture_volume = 100
         tmp = self.power_type
         sleep(0.01)         # when arduino open debug, sleep(> 0.3)
-        self.adc = ADC(5)
+        self.adc = ADC(5)   # Power voltage channel: 5
         self._debug('Init PiSmart object complete')
 
     def servo_switch(self, on_off):
@@ -70,7 +70,7 @@ class PiSmart(_Basic_class):
         self._power_type = self._read_sys_byte(self.POWER_TYPE)
         self._debug('Get power type from bottom board')
         return self._power_type
-    
+
     @power_type.setter
     def power_type(self, power_type):
         if power_type not in ['2S', '3S', 'DC']:
@@ -90,15 +90,18 @@ class PiSmart(_Basic_class):
     @property
     def power_voltage(self):
         A7_value = self.adc.read()
-        A7_volt = float(A7_value) / 1024 * 5
-        battery_volt = round(A7_volt * 14.7 / 4.7, 2)
-        self._debug('Read battery: %s V' % battery_volt)
-        return battery_volt
+        if A7_value:
+            A7_volt = float(A7_value) / 1024 * 5
+            battery_volt = round(A7_volt * 14.7 / 4.7, 2)
+            self._debug('Read battery: %s V' % battery_volt)
+            return battery_volt
+        else:
+            return False
 
     @property
     def speaker_volume(self):
         return self._speaker_volume
-    
+
     @speaker_volume.setter
     def speaker_volume(self, value):
         if value > 100:

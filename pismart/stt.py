@@ -1,5 +1,6 @@
 from basic import _Basic_class
-import SpeakPython.SpeakPythonRecognizer as SpeakPythonRecognizer 
+import SpeakPython.SpeakPythonRecognizer as SpeakPythonRecognizer
+from os import system
 
 class STT(_Basic_class):
     _class_name = 'STT'
@@ -9,6 +10,7 @@ class STT(_Basic_class):
         self.name_calling = name_calling
         self.dictionary = dictionary
         self._result = 'None'
+        system('touch {d}.sps'.format(d=dictionary))
         if dictionary_update:
             self.update_dictionary()
         self.recog = SpeakPythonRecognizer.SpeakPythonRecognizer(self._get_result, self.dictionary)

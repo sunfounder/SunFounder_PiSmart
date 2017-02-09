@@ -46,3 +46,4 @@ class ADC(_Basic_class):
             return value_return
         except Exception, e:
             self._error(e)
+            return False

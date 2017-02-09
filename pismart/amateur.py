@@ -7,19 +7,22 @@ class PiSmart(_Basic_class):
     ON = 1
     OFF = 0
 
-    def __init__(self):
+    def __init__(self, *item):
         self._ps            = pismart.PiSmart()
         self._ps.DEBUG = 'error'
         self.servo_switch   = self._ps.servo_switch
         self.pwm_switch     = self._ps.pwm_switch
         self.motor_switch   = self._ps.motor_switch
         self.speaker_switch = self._ps.speaker_switch
-        self.ADC_init()
-        self.Servo_init()
-        self.LED_init()
-        self.Motor_init()
-        self.TTS_init()
-        self.STT_init()
+        if len(item) == 0:
+            self.ADC_init()
+            self.Servo_init()
+            self.LED_init()
+            self.Motor_init()
+            self.TTS_init()
+            self.STT_init()
+        elif item == "manual":
+            pass
 
     def ADC_init(self):
         from adc import ADC
@@ -98,6 +101,7 @@ class PiSmart(_Basic_class):
         from stt import STT
         self._stt = STT('dictionary', name_calling=False, timeout=10.0, dictionary_update=True)
         self._stt.DEBUG = 'error'
+        self.capture_volume = 100
 
     def ADC_end(self):
         pass
@@ -147,6 +151,9 @@ class PiSmart(_Basic_class):
     @capture_volume.setter
     def capture_volume(self, value):
         self._ps.capture_volume = value
+    @property
+    def cpu_temperature(self):
+        return self._ps.cpu_temperature
 
     @property
     def A0(self):
