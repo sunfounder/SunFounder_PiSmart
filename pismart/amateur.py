@@ -118,6 +118,7 @@ class PiSmart(_Basic_class):
     def Motor_end(self):
         self._motor_a.stop()
         self._motor_b.stop()
+        self.motor_switch(self.OFF)
 
     def LED_end(self):
         self.LED = 0
