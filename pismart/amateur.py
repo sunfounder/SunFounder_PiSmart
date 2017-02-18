@@ -119,13 +119,21 @@ class PiSmart(_Basic_class):
     def LED_end(self):
         self.LED = 0
 
+    def TTS_end(self):
+        self._tts.end()
+        self.speaker_switch(self.OFF)
+
     def STT_end(self):
         self._stt.end()
+
 
     def end(self):
         self.ADC_end()
         self.LED_end()
         self.Motor_end()
+        self.Servo_end()
+        self.PWM_end()
+        self.STT_end()
 
     @property
     def power_type(self):
