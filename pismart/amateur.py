@@ -15,14 +15,17 @@ class PiSmart(_Basic_class):
         self.motor_switch   = self._ps.motor_switch
         self.speaker_switch = self._ps.speaker_switch
         if len(item) == 0:
-            self.ADC_init()
-            self.Servo_init()
-            self.LED_init()
-            self.Motor_init()
-            self.TTS_init()
-            self.STT_init()
+            self.All_init()
         elif item == "manual":
             pass
+
+    def ALL_init(self):
+        self.ADC_init()
+        self.Servo_init()
+        self.LED_init()
+        self.Motor_init()
+        self.TTS_init()
+        self.STT_init()
 
     def ADC_init(self):
         from adc import ADC
