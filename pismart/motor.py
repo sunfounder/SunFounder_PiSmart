@@ -101,4 +101,5 @@ class Motor(PWM):
             self._error("reversed value should be bool")
 
     def end(self):
+        self.stop()
         GPIO.cleanup(self.MOTOR_CHANNEL[self.channel])

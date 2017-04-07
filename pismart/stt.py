@@ -28,6 +28,10 @@ class STT(_Basic_class):
         self._debug('Time out, Sleep.')
 
     @property
+    def is_awake(self):
+        return self._awake
+
+    @property
     def result(self):
         self._heard = False
         return self._result
@@ -52,10 +56,14 @@ class STT(_Basic_class):
                     self.t.start()
                     self._debug('Count down begin')
                     self._result = out_str
+                    self._debug('result: %s'%self._result)
                     self._heard = True
+                    self._debug('heard set to: %s'%self._heard)
             elif self._awake:
                 self._result = out_str
+                self._debug('result: %s'%self._result)
                 self._heard = True
+                self._debug('heard set to: %s'%self._heard)
                 try:
                     self.t.cancel()
                     self._debug('Count down stop')
@@ -66,9 +74,13 @@ class STT(_Basic_class):
                     self._debug('Sleep')
             else:
                 self._result == ''
+                self._debug('result: %s'%self._result)
                 self._heard = False
+                self._debug('heard set to: %s'%self._heard)
         else:
+            self._debug('Name calling is false')
             self._result = out_str
+            self._debug('result: %s'%self._result)
             self._heard = True
             self._debug('Return %s' % out_str)
 
