@@ -15,7 +15,7 @@ class PiSmart(_Basic_class):
         self.motor_switch   = self._ps.motor_switch
         self.speaker_switch = self._ps.speaker_switch
         if len(item) == 0:
-            self.All_init()
+            self.ALL_init()
         elif item == "manual":
             pass
 

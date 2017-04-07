@@ -28,6 +28,10 @@ class STT(_Basic_class):
         self._debug('Time out, Sleep.')
 
     @property
+    def is_awake(self):
+        return self._awake
+
+    @property
     def result(self):
         self._heard = False
         return self._result
@@ -78,6 +82,7 @@ class STT(_Basic_class):
                 self._heard = False
                 self._debug('heard set to: %s'%self._heard)
         else:
+            self._debug('Name calling is false')
             self._result = out_str
             self._debug('result: %s'%self._result)
             self._heard = True
