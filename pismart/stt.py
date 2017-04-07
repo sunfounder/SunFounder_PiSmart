@@ -33,6 +33,10 @@ class STT(_Basic_class):
         return self._result
 
     @property
+    def is_awake(self):
+        return self._awake
+
+    @property
     def heard(self):
         return self._heard
     
@@ -40,7 +44,7 @@ class STT(_Basic_class):
         if self.name_calling:
             self._debug('Name calling is true')
             if out_str == '__NAME__':
-                self._debug('Called name is right')
+                self._debug('Called name is correct')
                 self._awake = True
                 self._debug('Awake')
                 try:
@@ -52,10 +56,14 @@ class STT(_Basic_class):
                     self.t.start()
                     self._debug('Count down begin')
                     self._result = out_str
+                    self._debug('result: %s'%self._result)
                     self._heard = True
+                    self._debug('heard set to: %s'%self._heard)
             elif self._awake:
                 self._result = out_str
+                self._debug('result: %s'%self._result)
                 self._heard = True
+                self._debug('heard set to: %s'%self._heard)
                 try:
                     self.t.cancel()
                     self._debug('Count down stop')
@@ -66,11 +74,14 @@ class STT(_Basic_class):
                     self._debug('Sleep')
             else:
                 self._result == ''
+                self._debug('result: %s'%self._result)
                 self._heard = False
+                self._debug('heard set to: %s'%self._heard)
         else:
             self._result = out_str
+            self._debug('result: %s'%self._result)
             self._heard = True
-            self._debug('Return %s' % out_str)
+            self._debug('heard set to: %s'%self._heard)
 
 
     def recognize(self):

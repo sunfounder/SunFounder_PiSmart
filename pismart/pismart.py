@@ -203,3 +203,9 @@ class PiSmart(_Basic_class):
     @property                    
     def cpu_usage(self):
         return str(os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'").readline().strip())
+
+    def end(self):
+        self.servo_switch(self.OFF)
+        self.pwm_switch(self.OFF)
+        self.motor_switch(self.OFF)
+        self.speaker_switch(self.OFF)
