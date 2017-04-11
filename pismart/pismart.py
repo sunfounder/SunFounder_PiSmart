@@ -126,7 +126,8 @@ class PiSmart(_Basic_class):
         capture_volume_id = self._get_capture_volume_id()
         if value not in range(0, 101):
             raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(value))
-        self._capture_volume = self._map(value, 0, 100, 0, 16)
+        volumn_max = self._get_capture_volume_max(capture_volume_id)
+        self._capture_volume = self._map(value, 0, 100, 0, volumn_max)
         cmd = "sudo amixer -c 1 cset numid=%s -- %d" % (capture_volume_id, self._capture_volume)
         self.run_command(cmd)
         return 0
@@ -145,6 +146,18 @@ class PiSmart(_Basic_class):
                 capture_volume_id = variable
         capture_volume_id = capture_volume_id.split('=')[1]
         return int(capture_volume_id)
+
+    def _get_capture_volume_max(self, numid):
+        all_values = self.run_command("sudo amixer -c 1 cget numid=%s"%numid)
+        all_values = all_values.split('\n')
+        values = all_values[1]
+        values = values.split(',')
+        for value in values:
+            if 'max' in value:
+                max_value = value
+        max_value = max_value.split('=')[1]
+
+        return int(max_value)
 
     @property
     def cpu_temperature(self):
