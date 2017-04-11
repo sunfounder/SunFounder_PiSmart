@@ -5,15 +5,16 @@ from os import system
 class STT(_Basic_class):
     _class_name = 'STT'
 
-    def __init__(self, dictionary, name_calling=False, timeout=5.0, dictionary_update=False):
+    def __init__(self, dictionary, device=1, name_calling=False, timeout=5.0, dictionary_update=False):
         self.logger_setup()
         self.name_calling = name_calling
         self.dictionary = dictionary
+        self.device = device
         self._result = 'None'
         system('touch {d}.sps'.format(d=dictionary))
         if dictionary_update:
             self.update_dictionary()
-        self.recog = SpeakPythonRecognizer.SpeakPythonRecognizer(self._get_result, self.dictionary)
+        self.recog = SpeakPythonRecognizer.SpeakPythonRecognizer(self.device, self._get_result, self.dictionary)
         self.recog.setDebug(20)
         if self.name_calling:
             import threading

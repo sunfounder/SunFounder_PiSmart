@@ -124,7 +124,10 @@ class SpeakPythonRecognizer:
 				raise Exception("jsgf file does not exist, even though the creation command succeeeded.");
 
 	def quit(self):
-		self.main_loop.quit();
+		try:
+			self.main_loop.quit()
+		except:
+			pass
 
 	def recognize(self):
 		self.main_loop = gobject.MainLoop();
@@ -150,7 +153,7 @@ class SpeakPythonRecognizer:
 		self.DEBUG_VAL = newDebugVal;
 
 	#constructor
-	def __init__(self, callback, appName, recogPath='./'):
+	def __init__(self, device, callback, appName, recogPath='./'):
 
 		#function reference to the callback we will use upon recognition completion
 		try:
@@ -171,7 +174,7 @@ class SpeakPythonRecognizer:
 		print "================="
 		print "start STT init"
 		print "================="
-		self.pipeline = gst.parse_launch(' ! '.join(['alsasrc device=hw:1',
+		self.pipeline = gst.parse_launch(' ! '.join(['alsasrc device=hw:%d'%device,
                                            'queue',
                                            'audioconvert',
                                            'audioresample',
