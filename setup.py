@@ -4,6 +4,37 @@ from codecs import open
 from os import path
 
 
+def remove_line(tfile,sstr):
+    i2c_list = []
+    try:
+        lines=open(tfile,'r').readlines()
+        flen=len(lines)
+        for i in range(flen):
+            if sstr in lines[i]:
+		print i, lines[i]
+                i2c_list.append(i)
+        for i in range(len(i2c_list)-1, -1, -1):
+            print i2c_list[i]
+            lines.remove(lines[i2c_list[i]])
+        open(tfile,'w').writelines(lines)
+        
+    except Exception,e:
+        print 'remove_line:', e
+
+def add_line(tfile,sstr):
+    try:
+        lines=open(tfile,'r').readlines()
+        lines.append(sstr)
+        open(tfile,'w').writelines(lines)
+        
+    except Exception,e:
+        print 'add line:', e
+
+remove_line('/boot/config.txt', 'dtparam=i2c_arm=')
+remove_line('/boot/config.txt', 'gpio-poweroff')
+add_line('/boot/config.txt', '\ndtparam=i2c_arm=on')
+add_line('/boot/config.txt', '\ndtoverlay=gpio-poweroff:gpiopin=13\n')
+
 here = path.abspath(path.dirname(__file__))
 
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
