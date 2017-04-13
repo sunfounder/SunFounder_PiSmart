@@ -10,9 +10,10 @@ def remove_line(tfile,sstr):
         lines=open(tfile,'r').readlines()
         flen=len(lines)
         for i in range(flen):
-            if sstr in lines[i]:
-		print i, lines[i]
-                i2c_list.append(i)
+            if "#" not in lines[i]:
+                if sstr in lines[i]:
+                    print i, lines[i]
+                    i2c_list.append(i)
         for i in range(len(i2c_list)-1, -1, -1):
             print i2c_list[i]
             lines.remove(lines[i2c_list[i]])
@@ -32,9 +33,12 @@ def add_line(tfile,sstr):
 
 remove_line('/boot/config.txt', 'dtparam=i2c_arm=')
 remove_line('/boot/config.txt', 'gpio-poweroff')
+remove_line('/etc/rc.local', 'exit 0')
+remove_line('/etc/rc.local', '/usr/local/bin/power_switch')
 add_line('/boot/config.txt', '\ndtparam=i2c_arm=on')
 add_line('/boot/config.txt', '\ndtoverlay=gpio-poweroff:gpiopin=13\n')
-
+add_line('/etc/rc.local', '\nsudo /usr/local/bin/power_switch &')
+add_line('/etc/rc.local', '\nexit 0\n')
 here = path.abspath(path.dirname(__file__))
 
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
