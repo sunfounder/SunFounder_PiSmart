@@ -111,6 +111,7 @@ class PiSmart(_Basic_class):
             value = 0
             self._warning('Value is less than 0, set to 0')
         # gain(dB) = 10 * log10(volume)
+        value = self._map(value, 0, 100, 0, 40)
         self._speaker_volume = self._map(value, 0, 100, 10.0**(-102.39/10), 10.0**(4.0/10))
         self._speaker_volume = int(math.log10(self._speaker_volume) * 100) * 10
         self._debug('speaker dB = %s' % self._speaker_volume)
