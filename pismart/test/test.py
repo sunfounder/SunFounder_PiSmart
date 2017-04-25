@@ -1,9 +1,10 @@
-from amateur import PiSmart
+from pismart.amateur import PiSmart
 import time
 
-pismart = PiSmart()
+pismart = PiSmart('manual')
 menu_list = ['0','1','2','3','4','5','6','7']
 def menu():
+    print ''
     print '|==================================================|'
     print '|             Test menu  for PiSmart               |'
     print '|--------------------------------------------------|'
@@ -41,6 +42,7 @@ def main():
             menu()
 
 def adc():
+    pismart.ADC_init()
     delay = 0.5
     try:
         while True:
@@ -51,6 +53,7 @@ def adc():
         pismart.ADC_end()
 
 def servo():
+    pismart.Servo_init()
     delay = 0.01
     try:
         while True:
@@ -82,23 +85,25 @@ def servo():
         pismart.Servo_end() 
     
 def led():
+    pismart.LED_init()
     delay = 0.01
     try:
         while True:
             print "Brightness: 0~100, delay=%s"%delay
-            for i in range(0, 100, 1):
+            for i in range(0, 101, 1):
                 pismart.LED = i
                 time.sleep(delay)
-            time.sleep(1)
+            #time.sleep(1)
             print "Brightness: 100~0, delay=%s"%delay
             for i in range(100, -1, -1):
                 pismart.LED = i
                 time.sleep(delay)
-            time.sleep(1)
+            #time.sleep(1)
     except KeyboardInterrupt:
         pismart.LED_end() 
     
 def motor():
+    pismart.Motor_init()
     try:
         while True:
             pismart.MotorA_reversed = True
@@ -170,6 +175,7 @@ def switchs():
     print 'done'
 
 def tts():
+    pismart.TTS_init()
     print pismart.Say
     pismart.Say = "Yes, i am"
 

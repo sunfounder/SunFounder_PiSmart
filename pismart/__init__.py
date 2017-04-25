@@ -29,7 +29,7 @@ def _read_file(filename):
     return value
 
 def _test_mode():
-    import test
+    from test import test
     try:
         test.main()
     except KeyboardInterrupt:

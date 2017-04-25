@@ -58,7 +58,7 @@ setup(
     author_email='support@sunfounder.com',
 
     license='GPL',
-
+    zip_safe=False,
     classifiers=[
         'Development Status :: 3 - Alpha',
 
