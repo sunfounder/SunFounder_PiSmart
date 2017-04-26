@@ -16,7 +16,7 @@ global string
 string = ''
 
 p = PiSmart()
-p.DEBUG = True
+p.DEBUG = 'debug'
 p.speaker_volume = 100
 
 tts = TTS('pico')

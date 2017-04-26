@@ -111,11 +111,13 @@ class PiSmart(_Basic_class):
             value = 0
             self._warning('Value is less than 0, set to 0')
         # gain(dB) = 10 * log10(volume)
-        value = self._map(value, 0, 100, 0, 40)
-        self._speaker_volume = self._map(value, 0, 100, 10.0**(-102.39/10), 10.0**(4.0/10))
-        self._speaker_volume = int(math.log10(self._speaker_volume) * 100) * 10
-        self._debug('speaker dB = %s' % self._speaker_volume)
-        cmd = "sudo amixer cset numid=1 -- %d" % self._speaker_volume
+        #self._debug('speaker percentage = %s' % value)
+        self._speaker_volume = self._map(value, 0, 100, 0, 75)
+        self._debug('speaker percentage = %s' % value)
+        #self._speaker_volume = self._map(value, 0, 100, ((10.0**(-102.39/10))-1), ((10.0**(4.0/10))-1))
+        #self._speaker_volume = int(math.log10(self._speaker_volume) * 100) * 10
+        #self._debug('speaker dB = %s' % self._speaker_volume)
+        cmd = "sudo amixer -M sset 'PCM' %d%%" % self._speaker_volume
         self.run_command(cmd)
     
     @property
@@ -124,12 +126,10 @@ class PiSmart(_Basic_class):
 
     @capture_volume.setter
     def capture_volume(self, value):
-        capture_volume_id = self._get_capture_volume_id()
         if value not in range(0, 101):
             raise ValueError ("Volume should be in [0, 100], not \"{0}\".".format(value))
-        volumn_max = self._get_capture_volume_max(capture_volume_id)
-        self._capture_volume = self._map(value, 0, 100, 0, volumn_max)
-        cmd = "sudo amixer -c 1 cset numid=%s -- %d" % (capture_volume_id, self._capture_volume)
+        self._capture_volume = value
+        cmd = "sudo amixer -M -c 1 sset 'Mic' %d%%" % (self._capture_volume)
         self.run_command(cmd)
         return 0
 
