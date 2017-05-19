@@ -190,7 +190,7 @@ def print_bar(value, total, unit):
     print ' [%s] %s' %(b, a)
 
 def start_project(project_name):
-    sample = 'sample'
+    sample = 'pismart_sample'
     cmd = 'mkdir %s' % project_name
     code_dir = '%s/%s.py' % (project_name, project_name)
     commands.getoutput(cmd)
