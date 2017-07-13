@@ -107,7 +107,7 @@ class SpeakPythonRecognizer:
 			self.debugMsg("Attempting to create FSG from JSGF using sphinx tools on the command line...", 3);
 
 			#run grammar conversion using sphinx tools
-			jsgfPath = fsgPath[-3] + "jsgf";
+			jsgfPath = fsgPath[:-3] + "jsgf";
 			cmd = "sphinx_jsgf2fsg -jsgf %s -fsg %s > /dev/null 2>&1" % (jsgfPath, fsgPath);
 			iret = os.system(cmd);
 		
