@@ -1,3 +1,9 @@
+//PiSmart board control
+// V1.1 Update 2017.7.14
+//    comment delay(1) under sendeData() for newest Raspbian
+//
+// V1.0 First Release
+//                            SunFounder
 #include <Wire.h>
 #include <Enerlib.h>      // energy library
 #include <MsTimer2.h>
@@ -398,13 +404,13 @@ void receiveData(int byteCount) {
 }
 
 void sendData() {
+  //delay(1);    // Remove for newest rasbian
+  Wire.write(buf);
   if (I2C_DEBUG) {
     Serial.println("============== Data Sent! ==============");
     Serial.print("  Sent value: "); Serial.println(buf);
     Serial.println("");
   }
-  delay(1);
-  Wire.write(buf);
   isSent = true;
 }
 
