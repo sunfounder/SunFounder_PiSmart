@@ -62,6 +62,7 @@ class PWM(_Basic_class):
 
     @frequency.setter
     def frequency(self, freq):
+        import math, time
         '''Set PWM frequency'''
         self._debug('Set frequency to %d' % freq)
         self._frequency = freq
@@ -74,13 +75,13 @@ class PWM(_Basic_class):
         prescale = int(prescale_value + 0.5)
         self._debug('Final pre-scale: %d' % prescale)
 
-        old_mode = self.bus.read_byte_data(self._MODE1);
+        old_mode = self.bus.read_byte_data(self.PWM_ADDRESS, self._MODE1);
         new_mode = (old_mode & 0x7F) | 0x10
-        self.bus.write_byte_data(self._MODE1, new_mode)
-        self.bus.write_byte_data(self._PRESCALE, int(math.floor(prescale)))
-        self.bus.write_byte_data(self._MODE1, old_mode)
+        self.bus.write_byte_data(self.PWM_ADDRESS, self._MODE1, new_mode)
+        self.bus.write_byte_data(self.PWM_ADDRESS, self._PRESCALE, int(math.floor(prescale)))
+        self.bus.write_byte_data(self.PWM_ADDRESS, self._MODE1, old_mode)
         time.sleep(0.005)
-        self._write_byte_data(self._MODE1, old_mode | 0x80)
+        self.bus.write_byte_data(self.PWM_ADDRESS, self._MODE1, old_mode | 0x80)
 
     def set_PWM(self, on, off=0):
         if on<off:
