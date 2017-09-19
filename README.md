@@ -1,7 +1,8 @@
 [SPS file format](documents/The-SPS-File-Format.md)
+[API Usage](documents/SunFounder-PiSmart-APi-Usage.md)
 
-### SunFounder PiRobot Library
-This is the library for SunFounder PiRobot.
+### SunFounder PiSmart Library
+This is the library for SunFounder PiSmart.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,12 +18,12 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-SunFounder PiRobot comes with ABSOLUTELY NO WARRANTY; for details run  `./show w`.
+SunFounder PiSmart comes with ABSOLUTELY NO WARRANTY; for details run  `./show w`.
 This is free software, and you are welcome to redistribute it
 under certain conditions; run `./show c` for details.
 
 SunFounder, Inc., hereby disclaims all copyright interest in the program
-'SunFounder PiRobot' (which makes passes at compilers) written by Cavon Lee.
+'SunFounder PiSmart' (which makes passes at compilers) written by Cavon Lee.
 
 Mike Huang, 21 August 2015
 
