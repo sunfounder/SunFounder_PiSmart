@@ -1,19 +1,15 @@
 #!/bin/bash
 #Installation
 
-##Tested on:
-
-#- Raspbian (RaspberryPi - think of those possibilities)
-
-#```
-
-# All of these commands are run from the base folder (SunFounder_PiRobot), wherever you clone it to
+# All of these commands are run from the base folder (SunFounder_PiSmart), wherever you clone it to
 
 if [ "$(whoami)" != "root" ] ; then
-    echo "You must run setup.sh as root."
+    echo -e "You must run as root. Try:\n    sudo ./install"
     exit
 fi
 
+install_dir=`pwd`
+dependences_dir=$install_dir"/dependencies"
 sudo apt-get update
 
 ###################################
@@ -24,15 +20,15 @@ sudo apt-get update
     "
 
     dep_install(){
-        echo "Installinging $1"
+        echo "Installinging $2"
         if sudo $1 install $2 -y; then
-            echo "Successfully installed $2"
+            echo -e "Successfully installed $2\n"
             summary=$summary"\n    $2                Success"
-            return true
+            return 1
         else
-            echo "Failed to installed $2"
+            echo -e "Failed to installed $2\n"
             summary=$summary"\n    $2                Fail"
-            return false
+            return 0
         fi
     }
 
@@ -68,7 +64,8 @@ sudo apt-get update
     apt_install "gstreamer-0.10"
     apt_install "gstreamer0.10-plugins-good"
     apt_install "gstreamer0.10-plugins-ugly"
-    if ! ((${apt_install "gstreamer1.0-pocketsphinx"})); then
+    apt_install "gstreamer1.0-pocketsphinx"
+    if [[ "$?" == "0" ]]; then
         apt_install "gstreamer0.10-pocketsphinx"
     fi
     apt_install "bison"
@@ -78,20 +75,23 @@ sudo apt-get update
     apt_install "swig"
 
     # Install pocketsphinx for Python
-    if ! ((${apt_install "python-pocketsphinx"})); then
+    apt_install "python-pocketsphinx"
+    if [[ "$?" == "0" ]]; then
         apt_install "python-pip"
         pip_install "pocketsphinx"
     fi
 
+    cd $dependences_dir
 
 
-    cd dependencies
-
-
-###################################
+#######################################
 # tar install antlr3.4 python runtime #
-###################################
-    if ls /usr/local/lib/python2.7/dist-packages/antlr_python_runtime-3.4-py2.7.egg/antlr3 ; then
+#######################################
+    ls /usr/local/lib/python2.7/dist-packages/antlr_python_runtime-3.4-py2.7.egg/antlr3 > /dev/null
+    if [[ "$?" == "0" ]]; then
+        echo "You have installed antlr3.4 before, skip."
+        summary=$summary"\n    antlr3.4                skip"
+    else
         if tar -xf antlr-3.4.tar.gz && \
             cd antlr-3.4/runtime/Python && \
             sudo python setup.py install; then
@@ -101,24 +101,24 @@ sudo apt-get update
             echo "Failed to install antlr3.4 runtime."
             summary=$summary"\n    antlr3.4                Fail"
         fi
-        cd ../../..     # dependence
-    else
-        echo "You have installed antlr3.4 before, skip."
-        summary=$summary"\n    antlr3.4                skip"
+        cd $dependences_dir     # cd to dependencies dir
     fi
     #NOTE: You can stop here if you don't care about speech recognition support and just desire usage of the text-based capabilities of SpeakPython
 
 ######################
 # tar install sphinxbase #
 ######################
-    if ls /usr/loca l/lib/python2.7/dist-packages/sphinxbase ; then
+    ls /usr/local/lib/python2.7/dist-packages/sphinxbase > /dev/null
+    if [[ "$?" == "0" ]]; then
+        echo "You have installed sphinxbase before, skip."
+        summary=$summary"\n    sphinxbase                skip"
+    else
         if tar -xf sphinxbase-5prealpha.tar.gz && \
             cd sphinxbase-5prealpha && \
             ./configure && \
             make clean && \
             make && \
-            sudo make install && \
-            cd .. ; then
+            sudo make install ; then
 
             echo "Successfully installed sphinxbase."
             summary=$summary"\n    sphinxbase                Success"
@@ -126,22 +126,23 @@ sudo apt-get update
             echo "Failed to install sphinxbase."
             summary=$summary"\n    sphinxbase                Fail"
         fi
-    else
-        echo "You have installed sphinxbase before, skip."
-        summary=$summary"\n    sphinxbase                skip"
+        cd $dependences_dir     # cd to dependencies dir
     fi
 
 ########################
 # tar install pocketsphinx #
 ########################
-    if ls /usr/local/ lib/pkgconfig/pocketsphinx.pc ; then
+    ls /usr/local/lib/pkgconfig/pocketsphinx.pc > /dev/null
+    if [[ "$?" == "0" ]]; then
+        echo "You have installed pocketsphinx before, skip."
+        summary=$summary"\n    pocketsphinx                Skip"
+    else
         if tar -xf pocketsphinx-5prealpha.tar.gz && \
             cd pocketsphinx-5prealpha && \
             ./configure && \
             make clean && \
             make && \
-            sudo make install && \
-            cd .. ; then
+            sudo make install ; then
 
             echo "Successfully installed pocketsphinx."
             summary=$summary"\n    pocketsphinx                Success"
@@ -149,9 +150,7 @@ sudo apt-get update
             echo "Failed to install pocketsphinx."
             summary=$summary"\n    pocketsphinx                Fail"
         fi
-    else
-        echo "You have installed pocketsphinx before, skip."
-        summary=$summary"\n    pocketsphinx                Skip"
+        cd $dependences_dir     # cd to dependencies dir
     fi
 
     # Configure shared library paths
@@ -178,29 +177,29 @@ sudo apt-get update
 # tar install g2p #
 ########################
     #Install g2p.py for word to phoneme conversion (optional)
-    if ls /usr/local/lib/python2.7/dist-packages/g2p.py ; then
+    ls /usr/local/lib/python2.7/dist-packages/g2p.py > /dev/null
+    if [[ "$?" == "0" ]]; then
+        echo "You have installed Sequitur-g2p before, skip."
+        summary=$summary"\n    Sequitur-g2p                Skip"
+    else
         if tar -xf Sequitur-g2p.tar.gz && \
             cd Sequitur-g2p/g2p && \
-            sudo python setup.py install --prefix /usr/local && \
-            cd .. ; then
+            sudo python setup.py install --prefix /usr/local ; then
             echo "Successfully installed Sequitur-g2p (g2p.py)"
             summary=$summary"\n    Sequitur-g2p                Success"
         else
             echo "Failed to install Sequitur-g2p (g2p.py)"
             summary=$summary"\n    Sequitur-g2p                Fail"
         fi
-        cd ..  # dependencies
-            echo 'Cleaning up...'
-            sudo rm -rf antlr-3.4 wsj1  Sequitur-g2p sphinxbase-5prealpha pocketsphinx-5prealpha 
-            echo 'done'
-    else
-        echo "You have installed Sequitur-g2p before, skip."
-        summary=$summary"\n    Sequitur-g2p                Skip"
+        cd $dependences_dir     # cd to dependencies dir
+        echo 'Cleaning up...'
+        sudo rm -rf antlr-3.4 wsj1  Sequitur-g2p sphinxbase-5prealpha pocketsphinx-5prealpha
+        echo 'done'
     fi
 
     #speakpython dictionary
     echo 'Copying files...'
-    cd /home/pi/SunFounder_PiSmart
+    cd $install_dir
     sudo cp ./bin/* /usr/local/bin
     sudo cp -r ./data/* /usr/local/bin
     sudo cp /usr/local/lib/libsphinxbase.so.3 /usr/lib
