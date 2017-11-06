@@ -1,199 +1,237 @@
 #!/bin/bash
 #Installation
 
-##Tested on:
-
-#- Raspbian (RaspberryPi - think of those possibilities)
-
-#```
-
-# All of these commands are run from the base folder (SunFounder_PiRobot), wherever you clone it to
+# All of these commands are run from the base folder (SunFounder_PiSmart), wherever you clone it to
 
 if [ "$(whoami)" != "root" ] ; then
-	echo "You must run setup.sh as root."
-	exit
+    echo -e "You must run as root. Try:\n    sudo ./install"
+    exit
 fi
 
+install_dir=`pwd`
+dependences_dir=$install_dir"/dependencies"
 sudo apt-get update
 
 ###################################
-# install espeak festival pico runtime #
+# installation summary #
 ###################################
-    echo "Installinging \n espeak \n festival \n libttspico-utils \n tts-engine"
-    if sudo apt-get install espeak festival libttspico-utils -y; then
-    	echo "Successfully installed espeak festival pico"
-    else
-    	echo "Failed to installed espeak festival pico"
-    	exit
-    fi
+    summary="\n
+    Summary:\n
+    "
+
+    dep_install(){
+        echo "Installinging $2"
+        if sudo $1 install $2 -y; then
+            echo -e "Successfully installed $2\n"
+            summary=$summary"\n    $2                Success"
+            return 1
+        else
+            echo -e "Failed to installed $2\n"
+            summary=$summary"\n    $2                Fail"
+            return 0
+        fi
+    }
+
+    apt_install(){
+        dep_install "apt-get" $1
+        return $?
+    }
+
+    pip_install(){
+        dep_install "pip" $1
+        return $?
+    }
 
 ###################################
-# install pocketsphinx i2c-tools python-smbus runtime #
+# apt install espeak festival pico runtime #
 ###################################
-    echo "Installinging \n pocketsphinx \n i2c-tools \n python-smbus"
-    if sudo apt-get install pocketsphinx i2c-tools python-smbus -y; then
-    	echo "Successfully installed pocketsphinx i2c-tools python-smbus"
-    else
-    	echo "Failed to installed pocketsphinx i2c-tools python-smbus"
-    	exit
-    fi
+    apt_install "espeak"
+    apt_install "festival"
+    apt_install "libttspico-utils"
 
 ###################################
-# install antlr3.4 python runtime #
+# apt install pocketsphinx i2c-tools python-smbus runtime #
 ###################################
-	
-	cd dependencies
-	if tar -xf antlr-3.4.tar.gz && \
-		cd antlr-3.4/runtime/Python && \
-		sudo python setup.py install; then
-		echo "Successfully installed antlr3.4 runtime."
-	else
-		echo "Failed to install antlr3.4 runtime."
-		exit
-	fi
-	cd ../../..		# dependence
-
-#NOTE: You can stop here if you don't care about speech recognition support and just desire usage of the text-based capabilities of SpeakPython
+    apt_install "pocketsphinx"
+    apt_install "i2c-tools"
+    apt_install "python-smbus"
 
 ####################
-# install GStreamer#
+# apt install GStreamer#
 ####################
+    # Install GStreamer using:
+    apt_install "python-gst0.10"
+    apt_install "gstreamer-0.10"
+    apt_install "gstreamer0.10-plugins-good"
+    apt_install "gstreamer0.10-plugins-ugly"
+    apt_install "gstreamer1.0-pocketsphinx"
+    if [[ "$?" == "0" ]]; then
+        apt_install "gstreamer0.10-pocketsphinx"
+    fi
+    apt_install "bison"
+    # Needed for make
+    apt_install "make"
+    apt_install "python-dev"
+    apt_install "swig"
 
-# Install GStreamer using:
-	echo "Installing gstreamer dependencies..."
-	if sudo apt-get install python-gst0.10 gstreamer-0.10 \
-            gstreamer0.10-plugins-good gstreamer0.10-plugins-ugly -y; then
-		echo "Successfully installed gstreamer and python gst."
-	else
-		echo "Failed to install gstreamer and python gst."
-		exit
-	fi
+    # Install pocketsphinx for Python
+    apt_install "python-pocketsphinx"
+    if [[ "$?" == "0" ]]; then
+        apt_install "python-pip"
+        pip_install "pocketsphinx"
+    fi
 
-    if sudo apt-get install gstreamer0.10-pocketsphinx -y; then
-		echo "Successfully installed gstreamer pocketsphinx plugin."
-	else
-		echo "Failed to install gstreamer pocketsphinx plugin."
-		exit
-	fi
+    cd $dependences_dir
 
-#needed for ./configure in next step
-    if sudo apt-get install bison -y; then
-		echo "Successfully installed bison."
-	else
-		echo "Failed to install bison."
-		exit
-	fi
 
-#needed for make
-        if sudo apt-get install make -y; then
-		echo "Successfully installed make."
-	else
-		echo "Failed to install make."
-		exit
-	fi
-        if sudo apt-get install python-dev -y; then
-		echo "Successfully installed python-dev."
-	else
-		echo "Failed to install python-dev."
-		exit
-	fi
-        if sudo apt-get install swig -y; then
-		echo "Successfully installed swig."
-	else
-		echo "Failed to install swig."
-		exit
-	fi
+#######################################
+# tar install antlr3.4 python runtime #
+#######################################
+    ls /usr/local/lib/python2.7/dist-packages/antlr_python_runtime-3.4-py2.7.egg/antlr3 > /dev/null
+    if [[ "$?" == "0" ]]; then
+        echo "You have installed antlr3.4 before, skip."
+        summary=$summary"\n    antlr3.4                skip"
+    else
+        if tar -xf antlr-3.4.tar.gz && \
+            cd antlr-3.4/runtime/Python && \
+            sudo python setup.py install; then
+            echo "Successfully installed antlr3.4 runtime."
+            summary=$summary"\n    antlr3.4                Success"
+        else
+            echo "Failed to install antlr3.4 runtime."
+            summary=$summary"\n    antlr3.4                Fail"
+        fi
+        cd $dependences_dir     # cd to dependencies dir
+    fi
+    #NOTE: You can stop here if you don't care about speech recognition support and just desire usage of the text-based capabilities of SpeakPython
 
 ######################
-# install sphinxbase #
+# tar install sphinxbase #
 ######################
-	if tar -xf sphinxbase-5prealpha.tar.gz && \
-		cd sphinxbase-5prealpha && \
-		./configure && \
-		make clean && \
-		make && \
-		sudo make install && \
-		cd .. ; then
+    ls /usr/local/lib/python2.7/dist-packages/sphinxbase > /dev/null
+    if [[ "$?" == "0" ]]; then
+        echo "You have installed sphinxbase before, skip."
+        summary=$summary"\n    sphinxbase                skip"
+    else
+        if tar -xf sphinxbase-5prealpha.tar.gz && \
+            cd sphinxbase-5prealpha && \
+            ./configure && \
+            make clean && \
+            make && \
+            sudo make install ; then
 
-		echo "Successfully installed sphinxbase."
-	else
-		echo "Failed to install sphinxbase."
-		exit
-	fi
-		
+            echo "Successfully installed sphinxbase."
+            summary=$summary"\n    sphinxbase                Success"
+        else
+            echo "Failed to install sphinxbase."
+            summary=$summary"\n    sphinxbase                Fail"
+        fi
+        cd $dependences_dir     # cd to dependencies dir
+    fi
+
 ########################
-# install pocketsphinx #
+# tar install pocketsphinx #
 ########################
-	if tar -xf pocketsphinx-5prealpha.tar.gz && \
-		cd pocketsphinx-5prealpha && \
-		./configure && \
-		make clean && \
-		make && \
-		sudo make install && \
-		cd .. ; then
-	
-		echo "Successfully installed pocketsphinx."
-	else
-		echo "Failed to install pocketsphinx."
-		exit
-	fi
+    ls /usr/local/lib/pkgconfig/pocketsphinx.pc > /dev/null
+    if [[ "$?" == "0" ]]; then
+        echo "You have installed pocketsphinx before, skip."
+        summary=$summary"\n    pocketsphinx                Skip"
+    else
+        if tar -xf pocketsphinx-5prealpha.tar.gz && \
+            cd pocketsphinx-5prealpha && \
+            ./configure && \
+            make clean && \
+            make && \
+            sudo make install ; then
 
-# Install pocketsphinx for Python
-	if sudo apt-get install python-pocketsphinx -y; then
-		echo "Successfully installed pocketsphinx."
-	else
-    ##OR
-		echo 'Trying to install pocketsphinx using pip instead...'
-        	sudo apt-get install python-pip -y
-        	sudo pip install pocketsphinx 
-	fi
+            echo "Successfully installed pocketsphinx."
+            summary=$summary"\n    pocketsphinx                Success"
+        else
+            echo "Failed to install pocketsphinx."
+            summary=$summary"\n    pocketsphinx                Fail"
+        fi
+        cd $dependences_dir     # cd to dependencies dir
+    fi
 
-# Configure shared library paths
-	echo 'Exporting library paths...'
-	export LD_LIBRARY_PATH=/usr/local/lib
-	export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+    # Configure shared library paths
+    echo 'Exporting library paths...'
+    export LD_LIBRARY_PATH=/usr/local/lib
+    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
     export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-0.10
 
-# Make sure there's a pocketsphinx configuration (should output a folder called 'model')
-#	ls /usr/share/pocketsphinx/
+    # Make sure there's a pocketsphinx configuration (should output a folder called 'model')
+    #   ls /usr/share/pocketsphinx/
 
-# If this folder exists, we can replace it with the command below
-#this will replace the existing model with one trained with suitable data for our application
-# wsj1 is by default the ptm version of cmu-us-en-5.2, utilize untar and use the non-ptm version for slower, more resource-intensive, and accurate recognition
-	if tar -xf wsj1.tar.gz && \
-		sudo cp -r wsj1 /usr/share/pocketsphinx/model/hmm/ ; then
-		echo "Successfully copied pocketsphinx model."
-	else
-		echo "Failed to copy pocketsphinx model."
-	fi
-#```
+    # If this folder exists, we can replace it with the command below
+    #this will replace the existing model with one trained with suitable data for our application
+    # wsj1 is by default the ptm version of cmu-us-en-5.2, utilize untar and use the non-ptm version for slower, more resource-intensive, and accurate recognition
+    if tar -xf wsj1.tar.gz && \
+        sudo cp -r wsj1 /usr/share/pocketsphinx/model/hmm/ ; then
+        echo "Successfully copied pocketsphinx model."
+    else
+        echo "Failed to copy pocketsphinx model."
+    fi
+    #```
+########################
+# tar install g2p #
+########################
+    #Install g2p.py for word to phoneme conversion (optional)
+    ls /usr/local/lib/python2.7/dist-packages/g2p.py > /dev/null
+    if [[ "$?" == "0" ]]; then
+        echo "You have installed Sequitur-g2p before, skip."
+        summary=$summary"\n    Sequitur-g2p                Skip"
+    else
+        if tar -xf Sequitur-g2p.tar.gz && \
+            cd Sequitur-g2p/g2p && \
+            sudo python setup.py install --prefix /usr/local ; then
+            echo "Successfully installed Sequitur-g2p (g2p.py)"
+            summary=$summary"\n    Sequitur-g2p                Success"
+        else
+            echo "Failed to install Sequitur-g2p (g2p.py)"
+            summary=$summary"\n    Sequitur-g2p                Fail"
+        fi
+        cd $dependences_dir     # cd to dependencies dir
+        echo 'Cleaning up...'
+        sudo rm -rf antlr-3.4 wsj1  Sequitur-g2p sphinxbase-5prealpha pocketsphinx-5prealpha
+        echo 'done'
+    fi
 
-#Install g2p.py for word to phoneme conversion (optional)
-	if tar -xf Sequitur-g2p.tar.gz && \
-		cd Sequitur-g2p/g2p && \
-		sudo python setup.py install --prefix /usr/local && \
-		cd .. ; then
-		echo "Successfully installed Sequitur-g2p (g2p.py)"
-	else
-		echo "Failed to install Sequitur-g2p (g2p.py)"
-	fi
-	cd ..  # dependencies
-		echo 'Cleaning up...'
-		sudo rm -rf antlr-3.4 wsj1  Sequitur-g2p sphinxbase-5prealpha pocketsphinx-5prealpha 
-		echo 'done'
-
-	
-#speakpython dictionary 
-	echo 'Copying files...'
-	cd /home/pi/SunFounder_PiSmart
+    #speakpython dictionary
+    echo 'Copying files...'
+    cd $install_dir
     sudo cp ./bin/* /usr/local/bin
     sudo cp -r ./data/* /usr/local/bin
-	sudo cp /usr/local/lib/libsphinxbase.so.3 /usr/lib
-	echo 'done'
+    sudo cp /usr/local/lib/libsphinxbase.so.3 /usr/lib
+    echo 'done'
 
-# Install PiSmart:
+    # Install PiSmart:
     echo 'Install PiSmart'
     sudo python setup.py install
 
-	echo 'all done, enjoy it'
+#######################
+# Enable I2C1 SPI#
+#######################
+    # Add lines to /boot/config.txt
+    echo -e "Enalbe I2C \n"
+    egrep -v "^#|^$" /boot/config.txt > config.txt.temp  # pick up all uncomment configrations
+    if grep -q 'dtparam=i2c_arm=on' config.txt.temp; then  # whether i2c_arm in uncomment configrations or not
+        echo -e '    Seem i2c_arm parameter already set, skip this step \n'
+    else
+        echo -e '    dtparam=i2c_arm=on \n' >> /boot/config.txt
+    fi
+
+    if grep -q 'dtparam=spi=on' config.txt.temp; then  # whether SPI in uncomment configrations or not
+        echo -e '    Seem spi parameter already set, skip this step \n'
+    else
+        echo -e '    dtparam=spi=on \n' >> /boot/config.txt
+    fi
+    rm config.txt.temp
+    echo -e "i2c & spi enable\n"
+
+
+##############################
+# print installation summary #
+##############################
+    echo -e $summary
+
