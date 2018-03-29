@@ -12,8 +12,6 @@
 '''
 from pismart.pismart import PiSmart
 from pismart.motor import Motor
-import time
-import RPi.GPIO
 
 p = PiSmart()
 motorA = Motor("MotorA")
@@ -62,7 +60,6 @@ def destroy():
 	motorA.stop()
 	motorB.stop()
 	p.motor_switch(0)
-	RPi.GPIO.cleanup()
 
 if __name__ == '__main__':
 	try:
