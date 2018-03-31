@@ -19,7 +19,7 @@ In the pismart package, the following python modules are included:
 ├── amateur.py  
 ├── basic.py  
 
-<font color=#0099ff size=6 face="黑体">1.pismart.py</font>  
+1.**pismart.py**
 This file is to control the device switching on and off of the PiSmart, read the temperature and power, and set the speaker and pickup.  
 The pismart module includes one class：PiSmart instance creation, with no parameters.  
 
@@ -107,7 +107,7 @@ Check and set channels, assignable with values ranging between [0~4].
 		A0_chn = my_A0.channel  # get channel
 		my_A0.channel = 4       # set channel
 
-<font color=#0099ff size=6 face="黑体">3.led.py</font>  
+**3.led.py**
 
 Control the LED ring on top of the PiSmart box.  
 The ring consists of 2 groups of LEDs.   
@@ -181,7 +181,7 @@ End the motor ojbect.
 
 		motorA.end()    # motor end
 
-<font color=#0099ff size=6 face="黑体">5.servo.py</font>  
+**5.servo.py**
 
 Control the servo connected to PiSmart to spin to a designated angle.   
 Create an instance, with 2 parameters:   
@@ -286,7 +286,8 @@ Create an instance, with a parameter engine for selecting the speech engine of b
 	from pismart.pismart import PiSmart
 	p = PiSmart()
 	tts = TTS('pico')       # create tts
-	p.speaker_volume(100)
+	p.speaker_switch(1)
+	p.speaker_volume = 100
 
 - **say**    
 Make the PiSmart broadcast the speech set.  
@@ -301,8 +302,7 @@ Values available: ['festival', 'espeak', 'pico'].
 		engine = tts.engine    # get tts engine
 		tts.engine = "espeak"  # set tts engine
 
-- **engine_pa
-- rams(amp=None, speed=None, gap=None, pitch=None)**    
+- **engine_params(amp=None, speed=None, gap=None, pitch=None)**    
 Set the parameters of the engine. Available only when the espeak engine is selected.
 Four parameters:   
 amp=None, amp should be in 0 to 200  
